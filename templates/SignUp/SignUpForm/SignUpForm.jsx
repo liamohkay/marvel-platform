@@ -9,8 +9,6 @@ import AuthTextField from '@/components/AuthTextField';
 
 import GradientOutlinedButton from '@/components/GradientOutlinedButton';
 
-import GoogleIcon from '@/assets/svg/googleIcon.svg';
-
 import styles from './styles';
 
 import sharedStyles from '@/styles/shared/sharedStyles';
@@ -25,7 +23,7 @@ import { validatePassword } from '@/libs/utils/AuthUtils';
 
 import OrBlock from '@/components/OrBlock/OrBlock';
 
-import GoogleSignInButton from '@/templates/SignIn/SignInForm/GoogleAuthButton';
+import GoogleAuthButton from '@/templates/SignIn/SignInForm/GoogleAuthButton';
 
 const DEFAULT_FORM_VALUES = {
   email: '',
@@ -295,7 +293,7 @@ const SignUpForm = (props) => {
         {renderPasswordAndConfirmPasswordInputs()}
         {renderSubmitButton()}
         <OrBlock />
-        <GoogleSignInButton isSignIn={false} />
+        <GoogleAuthButton isSignIn={false} />
       </Grid>
     </FormContainer>
   );
