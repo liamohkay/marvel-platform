@@ -7,6 +7,14 @@ const P_VALUE = 0.5;
 const handler = async (req, res) => {
   const { gRecaptchaToken } = req.body;
 
+  // Exit if not a valid post call
+  if (req.method !== 'POST') {
+    return res.status(405).json({
+      success: false,
+      message: 'Method Not Allowed',
+    });
+  }
+
   // if no token sent with request terminate api call
   if (!gRecaptchaToken) {
     logger.log('Missing reCAPTCHA token on user submit.');

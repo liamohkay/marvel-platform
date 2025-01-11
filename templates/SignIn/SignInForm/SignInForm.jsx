@@ -12,8 +12,6 @@ import { useDispatch } from 'react-redux';
 import AuthTextField from '@/components/AuthTextField';
 import GradientOutlinedButton from '@/components/GradientOutlinedButton';
 
-import GoogleIcon from '@/assets/svg/googleIcon.svg';
-
 import styles from './styles';
 
 import sharedStyles from '@/styles/shared/sharedStyles';
@@ -29,9 +27,9 @@ import fetchUserData from '@/libs/redux/thunks/user';
 
 import AUTH_REGEX from '@/libs/regex/auth';
 
-import OrBlock from '@/templates/utils/OrBlock';
+import OrBlock from '@/components/OrBlock/OrBlock';
 
-import GoogleSignInButton from './GoogleSignInButton';
+import GoogleAuthButton from './GoogleAuthButton';
 
 const DEFAULT_FORM_VALUES = {
   email: typeof window !== 'undefined' && window.location.hostname === 'localhost' ? 'user@test.com' : '',
@@ -193,7 +191,7 @@ const SignInForm = (props) => {
         {renderPaswordInput()}
         {renderSubmitButton()}
         <OrBlock />
-        <GoogleSignInButton isSignIn={true} />
+        <GoogleAuthButton isSignIn={true} />
       </Grid>
     </FormContainer>
   );

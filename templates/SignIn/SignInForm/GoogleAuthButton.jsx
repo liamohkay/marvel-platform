@@ -13,11 +13,29 @@ import GoogleIcon from '@/assets/svg/googleIcon.svg';
 
 import { AuthContext } from '@/libs/providers/GlobalProvider';
 
-const GoogleSignInButton = ({ isSignIn }) => {
+/**
+ * A button component for Google authentication with reCAPTCHA verification.
+ * This component renders a styled button for Google authentication. It handles
+ * Google login functionality, integrates with reCAPTCHA for verification, and
+ * supports both sign-in and sign-up flows.
+ *
+ * @component
+ * @param {Object} props
+ * @param {boolean} props.isSignIn - Determines if the button text reflects a sign-in or sign-up action.
+ * @returns {JSX.Element} The Google authentication button.
+ */
+const GoogleAuthButton = (props) => {
+  const { isSignIn } = props;
   const { handleOpenSnackBar, handleGoogleLogin } = useContext(AuthContext);
   const { executeRecaptcha } = useGoogleReCaptcha();
   const theme = useTheme();
 
+  /**
+   * Verifies the reCAPTCHA token and triggers a callback on success.
+   *
+   * @async
+   * @param {Function} callback - The function to execute after successful reCAPTCHA verification.
+   */
   const verifyRecaptcha = async (callback) => {
     if (!executeRecaptcha) return;
     try {
@@ -43,4 +61,4 @@ const GoogleSignInButton = ({ isSignIn }) => {
   );
 };
 
-export default GoogleSignInButton;
+export default GoogleAuthButton;

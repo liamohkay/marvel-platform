@@ -23,9 +23,9 @@ import AUTH_REGEX from '@/libs/regex/auth';
 import { signUp } from '@/libs/services/user/signUp';
 import { validatePassword } from '@/libs/utils/AuthUtils';
 
-import OrBlock from '@/templates/utils/OrBlock';
+import OrBlock from '@/components/OrBlock/OrBlock';
 
-import GoogleSignInButton from '@/templates/SignIn/SignInForm/GoogleSignInButton';
+import GoogleSignInButton from '@/templates/SignIn/SignInForm/GoogleAuthButton';
 
 const DEFAULT_FORM_VALUES = {
   email: '',
