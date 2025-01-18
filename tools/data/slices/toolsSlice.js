@@ -11,6 +11,10 @@ const toolsState = {
 const communicator = {
   prompt: null,
   response: null,
+  editorState: {
+    markdownContent: null,
+    editHistory: [],
+  },
   communicatorLoading: false,
   formOpen: true,
 };
@@ -37,6 +41,18 @@ const tools = createSlice({
     },
     setResponse: (state, action) => {
       state.response = action.payload;
+    },
+    setMarkdownContent: (state, action) => {
+      state.editorState.markdownContent = action.payload;
+    },
+    addStateToEditHistory: (state, action) => {
+      state.editorState.editHistory = [
+        ...state.editorState.editHistory,
+        action.payload,
+      ];
+      if (state.editorState.editHistory.length > 15) {
+        state.editorState.editHistory.shift();
+      }
     },
     setError: (state, action) => {
       state.error = action.payload;
