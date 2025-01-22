@@ -1,31 +1,50 @@
 'use client';
 
-import { Plate } from '@udecode/plate/react';
-import { useCreateEditor } from '@/components/editor/use-create-editor';
+import React, { useState } from 'react';
+
+import { Plate, usePlateEditor } from '@udecode/plate/react';
 import { Editor, EditorContainer } from '@/components/plate-ui/editor';
-import { BlockquoteElement } from '@/components/plate-ui/blockquote-element';
-import { ParagraphElement } from '@/components/plate-ui/paragraph-element';
-import { ListElement } from '@/components/plate-ui/list-element';
+
+const initialValue = [
+  {
+    children: [
+      {
+        text: 'This is editable plain text with react and history plugins, just like a <textarea>!',
+      },
+    ],
+    type: 'p',
+  },
+];
 
 export function PlateEditor({ markdownContent }) {
-  const editor = useCreateEditor(markdownContent);
+  const [debugValue, setDebugValue] = useState(initialValue);
+
+  const localValue =
+    typeof window !== 'undefined' && localStorage.getItem('editorContent');
+
+  const editor = usePlateEditor({
+    value: localValue ? JSON.parse(localValue) : initialValue,
+  });
 
   return (
     <Plate
       editor={editor}
-      components={{
-        blockquote: BlockquoteElement,
-        paragraph: ParagraphElement,
-        list: ListElement,
+      onChange={({ value }) => {
+        localStorage.setItem('editorContent', JSON.stringify(value));
+        setDebugValue(value);
       }}
     >
-      <EditorContainer className="p-4 bg-gray-800 text-gray-200 rounded-lg shadow-lg">
-        <Editor
-          variant="demo"
-          placeholder="Start typing here..."
-          className="min-h-[300px] focus:outline-none"
-        />
+      <EditorContainer>
+        <Editor />
       </EditorContainer>
+      
+      {/* Debugging Section */}
+      <div className="mt-4 p-4 bg-gray-100 rounded">
+        <h3 className="text-lg font-semibold">Debug Value:</h3>
+        <pre className="text-sm bg-gray-200 p-2 rounded overflow-x-auto">
+          {JSON.stringify(debugValue, null, 2)}
+        </pre>
+      </div>
     </Plate>
   );
 }

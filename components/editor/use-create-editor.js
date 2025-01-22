@@ -3,12 +3,11 @@
 import { unified } from 'unified';
 import remarkParse from 'remark-parse';
 import remarkSlate from 'remark-slate';
-import { withProps } from '@udecode/cn';
+import { createPlateEditor } from '@udecode/plate/react';
 import {
   ParagraphPlugin,
   PlateElement,
   PlateLeaf,
-  usePlateEditor,
 } from '@udecode/plate/react';
 import { BasicElementsPlugin } from '@udecode/plate-basic-elements/react';
 import {
@@ -18,6 +17,9 @@ import {
   StrikethroughPlugin,
   UnderlinePlugin,
 } from '@udecode/plate-basic-marks/react';
+import { BlockquotePlugin } from '@udecode/plate-block-quote/react';
+import { HeadingPlugin } from '@udecode/plate-heading/react';
+import { ListPlugin } from '@udecode/plate-list/react';
 
 // Utility function to parse Markdown into Slate-compatible value
 const parseMarkdownToSlate = (markdown) => {
@@ -38,37 +40,26 @@ const parseMarkdownToSlate = (markdown) => {
 export const useCreateEditor = (markdownContent = '') => {
   const parsedValue = parseMarkdownToSlate(markdownContent);
 
-  return usePlateEditor({
-    override: {
-      components: {
-        [BoldPlugin.key]: withProps(PlateLeaf, { as: 'strong' }),
-        [ItalicPlugin.key]: withProps(PlateLeaf, { as: 'em' }),
-        [ParagraphPlugin.key]: withProps(PlateElement, {
-          as: 'p',
-          className: 'mb-4',
-        }),
-        [StrikethroughPlugin.key]: withProps(PlateLeaf, { as: 's' }),
-        [UnderlinePlugin.key]: withProps(PlateLeaf, { as: 'u' }),
-        blockquote: withProps(PlateElement, {
-          as: 'blockquote',
-          className: 'mb-4 border-l-4 border-[#d0d7de] pl-4 text-[#636c76]',
-        }),
-        h1: withProps(PlateElement, {
-          as: 'h1',
-          className:
-            'mb-4 mt-6 text-3xl font-semibold tracking-tight lg:text-4xl',
-        }),
-        h2: withProps(PlateElement, {
-          as: 'h2',
-          className: 'mb-4 mt-6 text-2xl font-semibold tracking-tight',
-        }),
-        h3: withProps(PlateElement, {
-          as: 'h3',
-          className: 'mb-4 mt-6 text-xl font-semibold tracking-tight',
-        }),
-      },
+  return createPlateEditor({
+    plugins: [
+      BasicElementsPlugin,
+      BasicMarksPlugin,
+      BlockquotePlugin,
+      HeadingPlugin,
+      ListPlugin,
+    ],
+    components: {
+      [BoldPlugin.key]: PlateLeaf,
+      [ItalicPlugin.key]: PlateLeaf,
+      [UnderlinePlugin.key]: PlateLeaf,
+      [StrikethroughPlugin.key]: PlateLeaf,
+      [ParagraphPlugin.key]: PlateElement,
+      blockquote: PlateElement,
+      h1: PlateElement,
+      h2: PlateElement,
+      h3: PlateElement,
+      list: PlateElement,
     },
-    plugins: [BasicElementsPlugin, BasicMarksPlugin],
-    value: parsedValue, // Use parsed Markdown here
+    value: parsedValue, // Parsed Markdown
   });
 };
