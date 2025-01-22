@@ -2,6 +2,7 @@
 
 import React from 'react';
 
+// eslint-disable-next-line import/no-extraneous-dependencies
 import { withRef } from '@udecode/cn';
 import { PlateLeaf } from '@udecode/plate/react';
 import { useCodeSyntaxLeaf } from '@udecode/plate-code-block/react';
