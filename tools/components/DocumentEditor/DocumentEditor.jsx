@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { PlateEditor } from '@/components/editor/plate-editor';
+import { PlateEditor } from './editor/plate-editor';
 
 const DocumentEditor = ({ markdownContent }) => {
   return (
