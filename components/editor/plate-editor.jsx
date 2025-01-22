@@ -1,9 +1,11 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
+// eslint-disable-next-line import/no-extraneous-dependencies
 import { withProps } from '@udecode/cn';
 import {
+  createPlateEditor,
   Plate,
   PlateElement,
   PlateLeaf,
@@ -17,24 +19,31 @@ import {
 } from '@udecode/plate-basic-marks/react';
 import { BlockquotePlugin } from '@udecode/plate-block-quote/react';
 import { HeadingPlugin } from '@udecode/plate-heading/react';
+// eslint-disable-next-line import/no-extraneous-dependencies
+import { MarkdownPlugin } from '@udecode/plate-markdown';
+
 import { Editor, EditorContainer } from '@/components/plate-ui/editor';
 
-const initialValue = [
-  {
-    children: [
-      {
-        text: 'This is editable plain text with react and history plugins, just like a <textarea>!',
-      },
-    ],
-    type: 'p',
-  },
-];
-
 export function PlateEditor({ markdownContent }) {
-  const [debugValue, setDebugValue] = useState(initialValue);
+  const [debugValue, setDebugValue] = useState([]);
 
-  const localValue =
-    typeof window !== 'undefined' && localStorage.getItem('editorContent');
+  // Create a Plate Editor instance
+  const editorInstance = createPlateEditor({
+    plugins: [
+      BlockquotePlugin,
+      HeadingPlugin,
+      BoldPlugin,
+      ItalicPlugin,
+      UnderlinePlugin,
+      CodePlugin,
+      MarkdownPlugin, // Add Markdown support
+    ],
+  });
+
+  // Deserialize raw Markdown content into editor value
+  const parsedMarkdownContent = markdownContent
+    ? editorInstance.api.markdown.deserialize(markdownContent)
+    : [];
 
   const editor = usePlateEditor({
     override: {
@@ -72,9 +81,17 @@ export function PlateEditor({ markdownContent }) {
       ItalicPlugin,
       UnderlinePlugin,
       CodePlugin,
+      MarkdownPlugin,
     ],
-    value: localValue ? JSON.parse(localValue) : initialValue,
+    value: parsedMarkdownContent || [],
   });
+
+  useEffect(() => {
+    if (markdownContent) {
+      const content = editorInstance.api.markdown.deserialize(markdownContent);
+      setDebugValue(content);
+    }
+  }, [markdownContent]);
 
   return (
     <Plate
@@ -91,14 +108,16 @@ export function PlateEditor({ markdownContent }) {
           spellCheck={false}
         />
       </EditorContainer>
-      
+
       {/* Debugging Section */}
+      {/*
       <div className="mt-4 p-4 bg-gray-100 rounded">
         <h3 className="text-lg font-semibold">Debug Value:</h3>
         <pre className="text-sm bg-gray-200 p-2 rounded overflow-x-auto">
           {JSON.stringify(debugValue, null, 2)}
         </pre>
       </div>
+      */}
     </Plate>
   );
 }
