@@ -15,14 +15,14 @@ import {
   BoldPlugin,
   CodePlugin,
   ItalicPlugin,
+  StrikethroughPlugin,
   UnderlinePlugin,
 } from '@udecode/plate-basic-marks/react';
 import { BlockquotePlugin } from '@udecode/plate-block-quote/react';
 import { HeadingPlugin } from '@udecode/plate-heading/react';
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { MarkdownPlugin } from '@udecode/plate-markdown';
-
-import { Editor, EditorContainer } from '@/components/plate-ui/editor';
+import { Editor, EditorContainer } from '../plate-ui/editor';
 
 export function PlateEditor({ markdownContent }) {
   const [debugValue, setDebugValue] = useState([]);
@@ -36,6 +36,7 @@ export function PlateEditor({ markdownContent }) {
       ItalicPlugin,
       UnderlinePlugin,
       CodePlugin,
+      StrikethroughPlugin,
       MarkdownPlugin, // Add Markdown support
     ],
   });
@@ -81,6 +82,7 @@ export function PlateEditor({ markdownContent }) {
       ItalicPlugin,
       UnderlinePlugin,
       CodePlugin,
+      StrikethroughPlugin,
       MarkdownPlugin,
     ],
     value: parsedMarkdownContent || [],
