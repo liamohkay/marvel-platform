@@ -23,10 +23,7 @@ export const blockSelectionVariants = cva(
   }
 );
 
-export function BlockSelection({
-  className,
-  ...props
-}) {
+export function BlockSelection({ className, ...props }) {
   const isBlockSelected = useBlockSelected();
   const { useOption } = useEditorPlugin(DndPlugin);
   const isDragging = useOption('isDragging');
@@ -34,10 +31,14 @@ export function BlockSelection({
   if (!isBlockSelected) return null;
 
   return (
-    (<div
-      className={cn(blockSelectionVariants({
-        active: isBlockSelected && !isDragging,
-      }), className)}
-      {...props} />)
+    <div
+      className={cn(
+        blockSelectionVariants({
+          active: isBlockSelected && !isDragging,
+        }),
+        className
+      )}
+      {...props}
+    />
   );
 }

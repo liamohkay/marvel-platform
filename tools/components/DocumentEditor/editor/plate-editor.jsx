@@ -27,7 +27,6 @@ import { Editor, EditorContainer } from '../plate-ui/editor';
 export function PlateEditor({ markdownContent }) {
   const [debugValue, setDebugValue] = useState([]);
 
-  // Create a Plate Editor instance
   const editorInstance = createPlateEditor({
     plugins: [
       BlockquotePlugin,
@@ -37,7 +36,7 @@ export function PlateEditor({ markdownContent }) {
       UnderlinePlugin,
       CodePlugin,
       StrikethroughPlugin,
-      MarkdownPlugin, // Add Markdown support
+      MarkdownPlugin,
     ],
   });
 
@@ -51,21 +50,35 @@ export function PlateEditor({ markdownContent }) {
       components: {
         blockquote: withProps(PlateElement, {
           as: 'blockquote',
-          className: 'mb-4 border-l-4 border-[#d0d7de] pl-4 text-[#636c76]',
+          className: 'my-1 border-l-2 pl-6 italic',
         }),
         bold: withProps(PlateLeaf, { as: 'strong' }),
         h1: withProps(PlateElement, {
           as: 'h1',
-          className:
-            'mb-4 mt-6 text-3xl font-semibold tracking-tight lg:text-4xl',
+          className: 'mt-[1.6em] pb-1 font-heading text-4xl font-bold',
         }),
         h2: withProps(PlateElement, {
           as: 'h2',
-          className: 'mb-4 mt-6 text-2xl font-semibold tracking-tight',
+          className:
+            'mt-[1.4em] pb-px font-heading text-2xl font-semibold tracking-tight',
         }),
         h3: withProps(PlateElement, {
           as: 'h3',
-          className: 'mb-4 mt-6 text-xl font-semibold tracking-tight',
+          className:
+            'mt-[1em] pb-px font-heading text-xl font-semibold tracking-tight',
+        }),
+        h4: withProps(PlateElement, {
+          as: 'h4',
+          className:
+            'mt-[0.75em] font-heading text-lg font-semibold tracking-tight',
+        }),
+        h5: withProps(PlateElement, {
+          as: 'h5',
+          className: 'mt-[0.75em] text-lg font-semibold tracking-tight',
+        }),
+        h6: withProps(PlateElement, {
+          as: 'h6',
+          className: 'mt-[0.75em] text-base font-semibold tracking-tight',
         }),
         italic: withProps(PlateLeaf, { as: 'em' }),
         p: withProps(PlateElement, {

@@ -1,9 +1,13 @@
 import React from 'react';
-import { Fade, Grid, Typography, Box } from '@mui/material';
+
+import { Box, Fade, Grid, Typography } from '@mui/material';
 import { useSelector } from 'react-redux';
+
 import DocumentEditor from '../../components/DocumentEditor/DocumentEditor';
-import { convertResponseToMarkdown } from '@/tools/libs/utils/markdownConverter'; // Import your utility
+
 import styles from './styles'; // Import styles from the same file or external styles file
+
+import { convertResponseToMarkdown } from '@/tools/libs/utils/markdownConverter'; // Import your utility
 
 const QuizResponse = () => {
   const { response } = useSelector((state) => state.tools); // Fetch response from Redux
