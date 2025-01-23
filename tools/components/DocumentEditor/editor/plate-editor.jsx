@@ -24,10 +24,15 @@ import {
   UnderlinePlugin,
 } from '@udecode/plate-basic-marks/react';
 import { BlockquotePlugin } from '@udecode/plate-block-quote/react';
+import { HEADING_KEYS } from '@udecode/plate-heading';
 import { HeadingPlugin } from '@udecode/plate-heading/react';
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { MarkdownPlugin } from '@udecode/plate-markdown';
 import { Editor, EditorContainer } from '../plate-ui/editor';
+import { IndentPlugin } from '@udecode/plate-indent/react';
+import { IndentListPlugin } from '@udecode/plate-indent-list/react';
+import { ParagraphPlugin } from '@udecode/plate/react';
+
 
 import { EDIT_HISTORY_TYPES } from '@/tools/libs/constants/editor';
 
@@ -38,6 +43,7 @@ export function PlateEditor({ markdownContent }) {
   const editorInstance = createPlateEditor({
     plugins: [
       BlockquotePlugin,
+      ParagraphPlugin,
       HeadingPlugin,
       BoldPlugin,
       ItalicPlugin,
@@ -45,6 +51,17 @@ export function PlateEditor({ markdownContent }) {
       CodePlugin,
       StrikethroughPlugin,
       MarkdownPlugin,
+      HeadingPlugin,
+      IndentPlugin.configure({
+        inject: {
+          targetPlugins: [ParagraphPlugin.key, HEADING_KEYS.h1],
+        },
+      }),
+      IndentListPlugin.configure({
+        inject: {
+          targetPlugins: [ParagraphPlugin.key, HEADING_KEYS.h1],
+        },
+      }),
     ],
   });
 
@@ -56,6 +73,7 @@ export function PlateEditor({ markdownContent }) {
     };
   };
 
+  console.log('Parsed Markdown:', parsedMarkdownContent);
   const editor = usePlateEditor({
     override: {
       components: {
@@ -101,6 +119,7 @@ export function PlateEditor({ markdownContent }) {
     },
     plugins: [
       BlockquotePlugin,
+      ParagraphPlugin,
       HeadingPlugin,
       BoldPlugin,
       ItalicPlugin,
@@ -108,6 +127,17 @@ export function PlateEditor({ markdownContent }) {
       CodePlugin,
       StrikethroughPlugin,
       MarkdownPlugin,
+      HeadingPlugin,
+      IndentPlugin.configure({
+        inject: {
+          targetPlugins: [ParagraphPlugin.key, HEADING_KEYS.h1],
+        },
+      }),
+      IndentListPlugin.configure({
+        inject: {
+          targetPlugins: [ParagraphPlugin.key, HEADING_KEYS.h1],
+        },
+      }),
     ],
   });
 
