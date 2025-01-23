@@ -11,7 +11,7 @@ const convertQuizToMarkdown = (response) => {
   return response
     .map((question, index) => {
       const escapedQuestion = escapeMarkdown(question.question);
-      const questionText = `# ${index + 1}. ${escapedQuestion}\n`;
+      const questionText = `### ${index + 1}. ${escapedQuestion}\n`;
       const choices = question.choices
         .map(
           (choice) =>

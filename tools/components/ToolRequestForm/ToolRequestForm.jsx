@@ -21,6 +21,7 @@ import { AuthContext } from '@/libs/providers/GlobalProvider';
 import { firestore } from '@/libs/redux/store';
 
 import { fetchToolHistory, actions as toolActions } from '@/tools/data';
+import { EDIT_HISTORY_TYPES } from '@/tools/libs/constants/editor';
 import { INPUT_TYPES } from '@/tools/libs/constants/inputs';
 import { EDIT_HISTORY_TYPES } from '@/tools/libs/constants/editor';
 import submitPrompt from '@/tools/libs/services/submitPrompt';
