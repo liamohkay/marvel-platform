@@ -1,4 +1,3 @@
-'use client';;
 import React from 'react';
 
 import { cn } from '@udecode/cn';
@@ -8,6 +7,8 @@ import {
   useEditorRef,
 } from '@udecode/plate/react';
 import { cva } from 'class-variance-authority';
+
+('use client');
 
 const editorContainerVariants = cva(
   'relative w-full cursor-text select-text overflow-y-auto caret-primary selection:bg-brand/25 focus-visible:outline-none [&_.slate-selection-area]:z-50 [&_.slate-selection-area]:border [&_.slate-selection-area]:border-brand/25 [&_.slate-selection-area]:bg-brand/15',
@@ -28,16 +29,12 @@ const editorContainerVariants = cva(
   }
 );
 
-export const EditorContainer = ({
-  className,
-  variant,
-  ...props
-}) => {
+export const EditorContainer = ({ className, variant, ...props }) => {
   const editor = useEditorRef();
   const containerRef = useEditorContainerRef();
 
   return (
-    (<div
+    <div
       id={editor.uid}
       ref={containerRef}
       className={cn(
@@ -45,56 +42,66 @@ export const EditorContainer = ({
         editorContainerVariants({ variant }),
         className
       )}
-      {...props} />)
+      {...props}
+    />
   );
 };
 
 EditorContainer.displayName = 'EditorContainer';
 
-const editorVariants = cva(cn(
-  'group/editor',
-  'relative w-full cursor-text select-text overflow-x-hidden whitespace-pre-wrap break-words',
-  'rounded-md ring-offset-background  focus-visible:outline-none',
-  'placeholder:text-muted-foreground/80 [&_[data-slate-placeholder]]:top-[auto_!important] [&_[data-slate-placeholder]]:text-muted-foreground/80 [&_[data-slate-placeholder]]:!opacity-100',
-  '[&_strong]:font-bold'
-), {
-  defaultVariants: {
-    variant: 'default',
-  },
-  variants: {
-    disabled: {
-      true: 'cursor-not-allowed opacity-50',
+const editorVariants = cva(
+  cn(
+    'group/editor',
+    'relative w-full cursor-text select-text overflow-x-hidden whitespace-pre-wrap break-words',
+    'rounded-md ring-offset-background  focus-visible:outline-none',
+    'placeholder:text-muted-foreground/80 [&_[data-slate-placeholder]]:top-[auto_!important] [&_[data-slate-placeholder]]:text-muted-foreground/80 [&_[data-slate-placeholder]]:!opacity-100',
+    '[&_strong]:font-bold'
+  ),
+  {
+    defaultVariants: {
+      variant: 'default',
     },
-    focused: {
-      true: 'ring-2 ring-ring ring-offset-2',
+    variants: {
+      disabled: {
+        true: 'cursor-not-allowed opacity-50',
+      },
+      focused: {
+        true: 'ring-2 ring-ring ring-offset-2',
+      },
+      variant: {
+        ai: 'w-full px-0 text-base md:text-sm',
+        aiChat:
+          'max-h-[min(70vh,320px)] w-full max-w-[700px] overflow-y-auto px-3 py-2 text-base md:text-sm',
+        default:
+          'size-full px-16 pb-72 pt-4 text-base sm:px-[max(64px,calc(50%-350px))]',
+        demo: 'size-full px-16 pb-72 pt-4 text-base sm:px-[max(64px,calc(50%-350px))]',
+        fullWidth: 'size-full px-16 pb-72 pt-4 text-base sm:px-24',
+        none: '',
+        select: 'px-3 py-2 text-base data-[readonly]:w-fit',
+      },
     },
-    variant: {
-      ai: 'w-full px-0 text-base md:text-sm',
-      aiChat:
-        'max-h-[min(70vh,320px)] w-full max-w-[700px] overflow-y-auto px-3 py-2 text-base md:text-sm',
-      default:
-        'size-full px-16 pb-72 pt-4 text-base sm:px-[max(64px,calc(50%-350px))]',
-      demo: 'size-full px-16 pb-72 pt-4 text-base sm:px-[max(64px,calc(50%-350px))]',
-      fullWidth: 'size-full px-16 pb-72 pt-4 text-base sm:px-24',
-      none: '',
-      select: 'px-3 py-2 text-base data-[readonly]:w-fit',
-    },
-  },
-});
+  }
+);
 
-export const Editor = React.forwardRef(({ className, disabled, focused, variant, ...props }, ref) => {
-  return (
-    (<PlateContent
-      ref={ref}
-      className={cn(editorVariants({
-        disabled,
-        focused,
-        variant,
-      }), className)}
-      disabled={disabled}
-      disableDefaultStyles
-      {...props} />)
-  );
-});
+export const Editor = React.forwardRef(
+  ({ className, disabled, focused, variant, ...props }, ref) => {
+    return (
+      <PlateContent
+        ref={ref}
+        className={cn(
+          editorVariants({
+            disabled,
+            focused,
+            variant,
+          }),
+          className
+        )}
+        disabled={disabled}
+        disableDefaultStyles
+        {...props}
+      />
+    );
+  }
+);
 
 Editor.displayName = 'Editor';
