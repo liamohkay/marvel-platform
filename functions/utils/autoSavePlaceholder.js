@@ -1,19 +1,20 @@
 // utils/autoSavePlaceholder.js
 
+import 'dotenv/config';
 import {saveVersionToHistory} from './versionHistory.js';
 import {getFirestore, doc, updateDoc} from 'firebase/firestore';
 import {initializeApp} from 'firebase/app';
 
 // firebase configuration
 const firebaseConfig = {
-    apiKey: "AIzaSyBufIAosUH0T86wolmL4g_zu169TeV_KbA",
-    authDomain: "marvel-ai-d65df.firebaseapp.com",
-    projectId: "marvel-ai-d65df",
-    storageBucket: "marvel-ai-d65df.firebasestorage.app",
-    messagingSenderId: "318770858064",
-    appId: "1:318770858064:web:66f3332034e64c869a2955",
-    measurementId: "G-CLK80RBJMY"
+    apiKey: process.env.NEXT_PUBLIC_FIREBASE_CLIENT_API_KEY,
+    authDomain: process.env.NEXT_PUBLIC_FIREBASE_CLIENT_AUTH_DOMAIN,
+    projectId: process.env.NEXT_PUBLIC_FIREBASE_CLIENT_PROJECT_ID,
+    storageBucket: process.env.NEXT_PUBLIC_FIREBASE_CLIENT_STORAGE_BUCKET,
+    messagingSenderId: process.env.NEXT_PUBLIC_FIREBASE_CLIENT_MESSAGING_SENDER_ID,
+    appId: process.env.NEXT_PUBLIC_FIREBASE_CLIENT_APP_ID,
   };
+  
 
 // to initialize Firebase
 const app = initializeApp(firebaseConfig);
