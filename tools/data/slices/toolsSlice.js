@@ -14,6 +14,13 @@ const communicator = {
   editorState: {
     markdownContent: null,
     editHistory: [],
+    /* 
+      {
+        "content": string
+        "timestamp": timestamp,
+        "type": "initial" | "auto-save" | "manual-save" | "restore"
+      }
+    */
   },
   communicatorLoading: false,
   formOpen: true,
@@ -46,13 +53,8 @@ const tools = createSlice({
       state.editorState.markdownContent = action.payload;
     },
     addStateToEditHistory: (state, action) => {
-      state.editorState.editHistory = [
-        ...state.editorState.editHistory,
-        action.payload,
-      ];
-      if (state.editorState.editHistory.length > 15) {
-        state.editorState.editHistory.shift();
-      }
+      if (state.editorState.editHistory.length >= 15) state.editorState.editHistory.shift();
+      state.editorState.editHistory.push(action.payload);
     },
     setError: (state, action) => {
       state.error = action.payload;
