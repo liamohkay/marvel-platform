@@ -3,6 +3,8 @@ import React from 'react';
 import { Box, Fade, Grid, Typography } from '@mui/material';
 import { useSelector } from 'react-redux';
 
+import ExportButton from '@/components/TabButton/ExportButton';
+
 import DocumentEditor from '../../components/DocumentEditor/DocumentEditor';
 
 import styles from './styles'; // Import styles from the same file or external styles file
@@ -18,13 +20,16 @@ const QuizResponse = () => {
 
   console.log('Generated Markdown:', markdownContent);
   return (
-    <Fade in>
-      <Grid {...styles.mainGridProps}>
-        <Grid {...styles.questionsGridProps}>
-          <DocumentEditor markdownContent={markdownContent} />
+    <>
+      <ExportButton />
+      <Fade in>
+        <Grid {...styles.mainGridProps}>
+          <Grid {...styles.questionsGridProps}>
+            <DocumentEditor markdownContent={markdownContent} />
+          </Grid>
         </Grid>
-      </Grid>
-    </Fade>
+      </Fade>
+    </>
   );
 };
 
