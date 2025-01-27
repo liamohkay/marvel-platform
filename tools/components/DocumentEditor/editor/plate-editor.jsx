@@ -2,6 +2,11 @@
 
 import React, { useEffect, useState } from 'react';
 
+import { useSelector, useDispatch } from 'react-redux';
+import { fetchToolHistory, actions as toolActions } from '@/tools/data';
+
+const { addStateToEditHistory } = toolActions;
+
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { withProps } from '@udecode/cn';
 import {
@@ -24,8 +29,15 @@ import { HeadingPlugin } from '@udecode/plate-heading/react';
 import { MarkdownPlugin } from '@udecode/plate-markdown';
 import { Editor, EditorContainer } from '../plate-ui/editor';
 
+import { convertResponseToMarkdown } from '@/tools/libs/utils/markdownConverter';
+
+import tools from '@/tools/data/slices/toolsSlice';
+import { EDIT_HISTORY_TYPES } from '@/tools/libs/constants/editor';
+
 export function PlateEditor({ markdownContent }) {
   const [debugValue, setDebugValue] = useState([]);
+  const dispatch = useDispatch();
+  const { editorState } = useSelector((state) => state.tools);
 
   const editorInstance = createPlateEditor({
     plugins: [
@@ -39,6 +51,32 @@ export function PlateEditor({ markdownContent }) {
       MarkdownPlugin,
     ],
   });
+
+  const debounce = (callback, wait) => {
+    let timeoutId = null;
+    return (...args) => {
+      window.clearTimeout(timeoutId);
+      timeoutId = window.setTimeout(() => callback(...args), wait);
+    };
+  };
+
+  const handleAutosave = debounce((editorContent) => {
+    // Serialize platejs editor content to markdown for state save
+    const editorMarkdown = editorInstance.api.markdown.serialize(editorContent)
+    const { editHistory } = editorState;
+    // Don't autosave if last editor content is same as new changes
+    if (editorMarkdown === editHistory[editHistory.length - 1]?.content) return;
+
+    const newHistoryEntry = {
+      timestamp: Date.now(),
+      content: editorMarkdown,
+      type: EDIT_HISTORY_TYPES.AUTO_SAVE,
+    };
+
+    dispatch(addStateToEditHistory(newHistoryEntry)); // Save to state
+    // axios.post(FIREBASE_FUNCTION_URL, newHistoryEntry); // Save to firestore
+
+  }, 2000);
 
   // Deserialize raw Markdown content into editor value
   const parsedMarkdownContent = markdownContent
@@ -111,10 +149,7 @@ export function PlateEditor({ markdownContent }) {
   return (
     <Plate
       editor={editor}
-      onChange={({ value }) => {
-        localStorage.setItem('editorContent', JSON.stringify(value));
-        setDebugValue(value);
-      }}
+      onChange={({ value }) => handleAutosave(value)}
     >
       <EditorContainer>
         <Editor
@@ -123,16 +158,6 @@ export function PlateEditor({ markdownContent }) {
           spellCheck={false}
         />
       </EditorContainer>
-
-      {/* Debugging Section */}
-      {/*
-      <div className="mt-4 p-4 bg-gray-100 rounded">
-        <h3 className="text-lg font-semibold">Debug Value:</h3>
-        <pre className="text-sm bg-gray-200 p-2 rounded overflow-x-auto">
-          {JSON.stringify(debugValue, null, 2)}
-        </pre>
-      </div>
-      */}
     </Plate>
   );
 }

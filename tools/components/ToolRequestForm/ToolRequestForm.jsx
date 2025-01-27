@@ -23,7 +23,6 @@ import { firestore } from '@/libs/redux/store';
 import { fetchToolHistory, actions as toolActions } from '@/tools/data';
 import { EDIT_HISTORY_TYPES } from '@/tools/libs/constants/editor';
 import { INPUT_TYPES } from '@/tools/libs/constants/inputs';
-import { EDIT_HISTORY_TYPES } from '@/tools/libs/constants/editor';
 import submitPrompt from '@/tools/libs/services/submitPrompt';
 import evaluateCondition from '@/tools/libs/utils/evaluateCondition';
 import { convertResponseToMarkdown } from '@/tools/libs/utils/markdownConverter';
@@ -174,14 +173,13 @@ const ToolRequestForm = (props) => {
       );
 
       const markdown = convertResponseToMarkdown(response, id);
-
       dispatch(setResponse(response));
       dispatch(setMarkdownContent(markdown));
       dispatch(
         addStateToEditHistory({
           content: markdown,
-          type: EDIT_HISTORY_TYPES.INITIAL,
           timestamp: Date.now(),
+          type: EDIT_HISTORY_TYPES.INITIAL,
         })
       );
       dispatch(setFormOpen(false));
