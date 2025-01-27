@@ -23,6 +23,10 @@ import { firestore } from '@/libs/redux/store';
 import { fetchToolHistory, actions as toolActions } from '@/tools/data';
 import { EDIT_HISTORY_TYPES } from '@/tools/libs/constants/editor';
 import { INPUT_TYPES } from '@/tools/libs/constants/inputs';
+<<<<<<< HEAD
+=======
+
+>>>>>>> 523a369 (Bug fix to remove double import on ToolRequestForm.jsx)
 import submitPrompt from '@/tools/libs/services/submitPrompt';
 import evaluateCondition from '@/tools/libs/utils/evaluateCondition';
 import { convertResponseToMarkdown } from '@/tools/libs/utils/markdownConverter';
