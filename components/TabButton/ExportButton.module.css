@@ -2,15 +2,15 @@
   background: none;
   display: flex;
   gap: 5px;
-  width: 52px;
-  height: 24px;
+  /* width: auto;
+  height: 24px; */
 }
 
 .buttonText {
   font-family: 'Satoshi';
   font-weight: 500;
-  font-size: 18px;
-  line-height: 24.3px;
+  font-size: 16px;
+  line-height: 1.2;
   color: #9e7eff;
 }
 
