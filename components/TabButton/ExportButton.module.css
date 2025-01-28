@@ -5,8 +5,8 @@
   align-items: center;
   font-family: 'Satoshi';
   font-weight: 500;
-  font-size: 16px;
-  line-height: 1.2;
+  font-size: 18px;
+  line-height: 24.3px;
   color: #9e7eff;
   border: none;
 }
@@ -14,8 +14,8 @@
 .buttonText {
   font-family: 'Satoshi';
   font-weight: 500;
-  font-size: 16px;
-  line-height: 1.2;
+  font-size: 18px;
+  line-height: 24.3px;
   color: #9e7eff;
   background: none;
 }
@@ -28,13 +28,14 @@
   border: #9e7eff 5px solid;
   border-radius: 8px;
   padding: 10px;
+  margin-top: 5px;
 }
 
 .dropdownBtn {
   font-family: 'Satoshi';
   font-weight: 500;
-  font-size: 18px;
-  line-height: 24.3px;
+  font-size: 16px;
+  line-height: 22px;
   color: #9e7eff;
   padding: 10px 20px;
   background-color: transparent;
