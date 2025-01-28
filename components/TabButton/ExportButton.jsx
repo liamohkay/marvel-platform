@@ -15,10 +15,7 @@ const ExportButton = () => {
   const cleanText = (text) => {
     return text
       .replace(/<\/?[^>]+(>|$)/g, '') // Remove any lingering HTML tags
-      .replace(/\*/g, '') // Remove markdown bold/italic markers (*)
-      .replace(/&nbsp;/g, ' ') // Replace any encoded spaces
-      .replace(/\s+/g, ' ') // Normalize excessive spaces
-      .trim(); // Trim extra spaces from start and end
+      .replace(/&nbsp;/g, ' '); // Replace any encoded spaces
   };
 
   const handleExportPDF = () => {
