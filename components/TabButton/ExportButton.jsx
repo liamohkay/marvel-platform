@@ -15,19 +15,39 @@ const ExportButton = () => {
   const handleExportPDF = () => {
     // eslint-disable-next-line new-cap
     const doc = new jsPDF();
-    doc.text(markdownContent, 10, 10);
+
+    doc.setFont('courier');
+    const marginLeft = 10;
+    const pageWidth = doc.internal.pageSize.getWidth() - 20;
+
+    const formattedText = markdownContent
+      .split('\n')
+      .map((line) => `  ${line}`);
+    const wrappedText = doc.splitTextToSize(formattedText, pageWidth);
+
+    // doc.text(markdownContent, 10, 10);
+    doc.text(wrappedText, marginLeft, 10, { align: 'left' });
     doc.save('document.pdf');
   };
 
   const handleExportText = () => {
-    const blob = new Blob([markdownContent], {
+    const formattedText = markdownContent.replace(/\n/g, '\r\n');
+
+    const blob = new Blob([formattedText], {
       type: 'text/plain;charset=utf-8"#',
     });
     saveAs(blob, 'document.txt"#');
   };
 
   const handleExportHTML = () => {
-    const blob = new Blob([`<html><body>${markdownContent}</body></html>`], {
+    const formattedHTML = `<html>
+    <head><title>Exported Document</title></head>
+    <body style="font-family: Arial, sans-serif; white-space: pre-wrap;">
+      <pre>${markdownContent}</pre>
+    </body>
+  </html>`;
+
+    const blob = new Blob([formattedHTML], {
       type: 'text/html;charset=utf-8',
     });
     saveAs(blob, 'document.html');
@@ -73,21 +93,21 @@ const ExportButton = () => {
       {showDropdown && (
         <div className={styles.dropdown}>
           <button
-            className={styles.dropdownTex}
+            className={styles.dropdownText}
             type="button"
             onClick={handleExportPDF}
           >
             Export as PDF
           </button>
           <button
-            className={styles.dropdownTex}
+            className={styles.dropdownText}
             type="button"
             onClick={handleExportText}
           >
             Export as Text
           </button>
           <button
-            className={styles.dropdownTex}
+            className={styles.dropdownText}
             type="button"
             onClick={handleExportHTML}
           >
