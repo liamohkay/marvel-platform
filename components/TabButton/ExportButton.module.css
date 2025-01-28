@@ -1,6 +1,5 @@
 .buttonContainer {
-  /* background-color: black;
-  opacity: 0; */
+  background: none;
   display: flex;
   gap: 5px;
   width: 52px;
@@ -19,8 +18,7 @@
   display: flex;
   flex-direction: column;
   gap: 16px;
-  /* background-color: black; */
-  /* opacity: 0; */
+  background: none;
   display: flex;
   width: auto;
   height: auto;
