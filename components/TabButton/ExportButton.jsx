@@ -15,7 +15,7 @@ const ExportButton = () => {
   const cleanText = (text) => {
     return text
       .replace(/<\/?[^>]+(>|$)/g, '') // Remove any lingering HTML tags
-      .replace(/&nbsp;/g, ' '); // Replace any encoded spaces
+      .replace(/&nbsp;/g, ' ') // Replace any encoded spaces
       .replace(/###/g, ' '); // Replace any encoded spaces
   };
 
