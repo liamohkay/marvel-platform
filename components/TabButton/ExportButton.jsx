@@ -2,7 +2,9 @@ import React, { useState } from 'react';
 
 import { saveAs } from 'file-saver';
 import { jsPDF } from 'jspdf';
+
 import { useSelector } from 'react-redux';
+
 import styles from './ExportButton.module.css';
 
 const ExportButton = () => {
@@ -12,6 +14,7 @@ const ExportButton = () => {
     (state) => state.tools.editorState.markdownContent
   );
 
+  // Helper function used for additonal formatting of the exported document.
   const cleanText = (text) => {
     return text
       .replace(/<\/?[^>]+(>|$)/g, '') // Remove any lingering HTML tags
@@ -19,6 +22,7 @@ const ExportButton = () => {
       .replace(/###/g, ' '); // Replace any encoded spaces
   };
 
+  // Handle function for exporting in PDF format
   const handleExportPDF = () => {
     // eslint-disable-next-line new-cap
     const doc = new jsPDF();
@@ -37,6 +41,7 @@ const ExportButton = () => {
     doc.save('document.pdf');
   };
 
+  // Handle function for exporting in text format
   const handleExportText = () => {
     const formattedText = cleanText(markdownContent).replace(/\n/g, '\r\n');
 
@@ -46,6 +51,7 @@ const ExportButton = () => {
     saveAs(blob, 'document.txt"#');
   };
 
+  // Handle function for exporting in HTML format
   const handleExportHTML = () => {
     const formattedHTML = `<html>
     <head><title>Exported Document</title></head>
