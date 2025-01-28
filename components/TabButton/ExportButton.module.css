@@ -30,7 +30,7 @@
   padding: 10px;
 }
 
-.dropdownText {
+.dropdownBtn {
   font-family: 'Satoshi';
   font-weight: 500;
   font-size: 18px;
@@ -42,4 +42,8 @@
   text-align: left;
   padding: 10px 20px;
   transition: background 0.3s ease-in-out;
+}
+
+.dropdownBtn:hover {
+  background: rgba(158, 126, 255, 0.2);
 }
