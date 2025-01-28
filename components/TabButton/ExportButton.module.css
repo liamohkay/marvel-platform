@@ -12,6 +12,7 @@
   font-size: 16px;
   line-height: 1.2;
   color: #9e7eff;
+  background: none;
 }
 
 .dropdown {
@@ -22,6 +23,7 @@
   display: flex;
   width: auto;
   height: auto;
+  border: #9e7eff 5px;
 }
 
 .dropdownText {
@@ -31,4 +33,5 @@
   line-height: 24.3px;
   color: #9e7eff;
   padding: 10px 20px;
+  background-color: none;
 }
