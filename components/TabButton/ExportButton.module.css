@@ -2,7 +2,7 @@
   /* background-color: black;
   opacity: 0; */
   display: flex;
-  row-gap: 5px;
+  gap: 5px;
   width: 52px;
   height: 24px;
 }
@@ -18,7 +18,7 @@
 .dropdown {
   display: flex;
   flex-direction: column;
-  column-gap: 16px;
+  gap: 16px;
   /* background-color: black; */
   /* opacity: 0; */
   display: flex;
