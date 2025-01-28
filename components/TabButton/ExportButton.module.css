@@ -1,9 +1,14 @@
-.buttonContainer {
-  background: none;
+.buttonContainer button {
+  background: transparent;
   display: flex;
   gap: 5px;
-  /* width: auto;
-  height: 24px; */
+  align-items: center;
+  font-family: 'Satoshi';
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 1.2;
+  color: #9e7eff;
+  border: none;
 }
 
 .buttonText {
@@ -18,12 +23,11 @@
 .dropdown {
   display: flex;
   flex-direction: column;
-  gap: 16px;
-  background: none;
-  display: flex;
-  width: auto;
-  height: auto;
-  border: #9e7eff 5px;
+  gap: 12px;
+  background: transparent;
+  border: #9e7eff 5px solid;
+  border-radius: 8px;
+  padding: 10px;
 }
 
 .dropdownText {
@@ -33,5 +37,9 @@
   line-height: 24.3px;
   color: #9e7eff;
   padding: 10px 20px;
-  background-color: none;
+  background-color: transparent;
+  cursor: pointer;
+  text-align: left;
+  padding: 10px 20px;
+  transition: background 0.3s ease-in-out;
 }
