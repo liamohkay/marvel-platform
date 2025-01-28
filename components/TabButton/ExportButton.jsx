@@ -66,7 +66,7 @@ const ExportButton = () => {
               stroke-linejoin="round"
             />
           </svg>
-          <span className={styles.buttonText}>Export</span>
+          <p className={styles.buttonText}>Export</p>
         </button>
       </div>
 
