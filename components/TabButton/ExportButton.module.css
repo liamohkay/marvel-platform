@@ -1,0 +1,36 @@
+.buttonContainer {
+  background-color: black;
+  opacity: 0;
+  display: flex;
+  row-gap: 5px;
+  width: 52px;
+  height: 24px;
+}
+
+.buttonText {
+  font-family: 'Satoshi';
+  font-weight: 500;
+  font-size: 18px;
+  line-height: 24.3px;
+  color: #9e7eff;
+}
+
+.dropdown {
+  display: flex;
+  flex-direction: column;
+  column-gap: 16px;
+  background-color: black;
+  opacity: 0;
+  display: flex;
+  width: auto;
+  height: auto;
+}
+
+.dropdownText {
+  font-family: 'Satoshi';
+  font-weight: 500;
+  font-size: 18px;
+  line-height: 24.3px;
+  color: #9e7eff;
+  padding: 10px 20px;
+}
