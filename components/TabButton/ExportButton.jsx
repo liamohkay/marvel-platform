@@ -12,6 +12,15 @@ const ExportButton = () => {
     (state) => state.tools.editorState.markdownContent
   );
 
+  const cleanText = (text) => {
+    return text
+      .replace(/<\/?[^>]+(>|$)/g, '') // Remove any lingering HTML tags
+      .replace(/\*/g, '') // Remove markdown bold/italic markers (*)
+      .replace(/&nbsp;/g, ' ') // Replace any encoded spaces
+      .replace(/\s+/g, ' ') // Normalize excessive spaces
+      .trim(); // Trim extra spaces from start and end
+  };
+
   const handleExportPDF = () => {
     // eslint-disable-next-line new-cap
     const doc = new jsPDF();
@@ -20,7 +29,7 @@ const ExportButton = () => {
     const marginLeft = 10;
     const pageWidth = doc.internal.pageSize.getWidth() - 20;
 
-    const formattedText = markdownContent
+    const formattedText = cleanText(markdownContent)
       .split('\n')
       .map((line) => `  ${line}`);
     const wrappedText = doc.splitTextToSize(formattedText, pageWidth);
@@ -31,7 +40,7 @@ const ExportButton = () => {
   };
 
   const handleExportText = () => {
-    const formattedText = markdownContent.replace(/\n/g, '\r\n');
+    const formattedText = cleanText(markdownContent).replace(/\n/g, '\r\n');
 
     const blob = new Blob([formattedText], {
       type: 'text/plain;charset=utf-8"#',
@@ -43,7 +52,7 @@ const ExportButton = () => {
     const formattedHTML = `<html>
     <head><title>Exported Document</title></head>
     <body style="font-family: Arial, sans-serif; white-space: pre-wrap;">
-      <pre>${markdownContent}</pre>
+      <pre>${cleanText(markdownContent)}</pre>
     </body>
   </html>`;
 
@@ -93,21 +102,21 @@ const ExportButton = () => {
       {showDropdown && (
         <div className={styles.dropdown}>
           <button
-            className={styles.dropdownText}
+            className={styles.dropdownBtn}
             type="button"
             onClick={handleExportPDF}
           >
             Export as PDF
           </button>
           <button
-            className={styles.dropdownText}
+            className={styles.dropdownBtn}
             type="button"
             onClick={handleExportText}
           >
             Export as Text
           </button>
           <button
-            className={styles.dropdownText}
+            className={styles.dropdownBtn}
             type="button"
             onClick={handleExportHTML}
           >
