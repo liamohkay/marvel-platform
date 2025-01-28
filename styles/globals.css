@@ -1,7 +1,146 @@
-
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+
+.slate-quiz-container {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  gap: 16px;
+}
+
+.slate-p{
+  margin-bottom: 1rem; 
+  text-align: left; 
+  font-family: 'Satoshi Regular', sans-serif; 
+  font-size: 16px; 
+  line-height: 1.6; 
+  color: #FFFFFF; 
+  display: block; 
+   padding: 12px 16px;
+   position: relative;
+}
+
+.slate-h3{
+  padding: 12px 16px;
+  margin-bottom: 0.8rem; /* Spacing between question and answers */
+  font-family: 'Satoshi Bold', sans-serif; /* Make the question bolder */
+  font-size: 20px; /* Slightly larger than answers */
+  line-height: 1.5;
+  color: #FFFFFF; /* Softer white for contrast */
+  text-align: left;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  position: relative;
+}
+
+.slate-answers {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.slate-editor {
+  padding: 16px;
+  /* Deep dark blue-purple */
+  background-color: transparent; 
+  /* Light gray for text */
+  color: #FFFFFF; 
+  border-radius: 0px 0px 12px 12px;
+  /* Darker border */
+  border-left: 1px solid #9D74FF;
+  border-right: 1px solid #9D74FF; 
+  border-bottom: 1px solid #9D74FF;
+}
+
+.slate-toolbar {
+  display: flex;
+  justify-content: start;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+
+  background: #24272F;
+  border-top: 1px solid #9D74FF;
+  border-left: 1px solid #9D74FF;
+  border-right: 1px solid #9D74FF;
+  border-radius: 12px 12px 0px 0px;
+  width: 100%;
+  overflow-x: auto;
+}
+
+.slate-toolbar-group {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.slate-btn-container {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.slate-btn {
+  position: relative;
+  background: transparent;
+  border: none;
+  /* Muted purple for inactive state */
+  color: #9E7EFF; 
+  transition: all 0.3s ease;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+.slate-btn:hover {
+  background: #0C0B17; /* Dark purple hover state */
+  color: #9E7EFF; /* Lighter purple on hover */
+}
+
+.slate-btn.is-active {
+  background: #4A2C4A; /* Active state background */
+  color: #9E94A5; /* Active state text color */
+ 
+}
+
+.slate-btn-indicator {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background-color: #B084B0; /* Light purple indicator */
+  opacity: 0.75;
+  border-radius: 0 0 8px 8px;
+}
+
+.slate-dropdown {
+  color: #FFFFFF;
+  background-color: #0C0B17;
+  border: 1px solid transparent;
+  border-radius: 5px;
+  padding: 4px 8px;
+  transition: all 0.3s ease;
+}
+
+.slate-dropdown:hover {
+  background-color: #3E3A4B;
+}
+
+.slate-separator {
+  height: 24px;
+  /* Dark border color */
+  background-color: #DECDFF; 
+  width: 1px;
+  margin: 0 8px;
+}
 
 /*
 Roboto-Mono font imported here
@@ -280,4 +419,3 @@ a {
     @apply bg-background text-foreground;
   }
 }
-

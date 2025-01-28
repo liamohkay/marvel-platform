@@ -20,16 +20,19 @@ import {
 } from '@udecode/plate-basic-marks/react';
 import { BlockquotePlugin } from '@udecode/plate-block-quote/react';
 import { HeadingPlugin } from '@udecode/plate-heading/react';
+import { ListPlugin } from '@udecode/plate-list/react';
+import { ListElement } from '../plate-ui/list-element';
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { MarkdownPlugin } from '@udecode/plate-markdown';
 import { Editor, EditorContainer } from '../plate-ui/editor';
 
-export function PlateEditor({ markdownContent }) {
+export function PlateEditor({ markdownContent, onEditorReady }) {
   const [debugValue, setDebugValue] = useState([]);
 
   const editorInstance = createPlateEditor({
     plugins: [
       BlockquotePlugin,
+      ListPlugin,
       HeadingPlugin,
       BoldPlugin,
       ItalicPlugin,
@@ -52,6 +55,8 @@ export function PlateEditor({ markdownContent }) {
           as: 'blockquote',
           className: 'my-1 border-l-2 pl-6 italic',
         }),
+        ul: withProps(ListElement, { variant: 'ul', className: 'slate-answers' }),
+        ol: withProps(ListElement, { variant: 'ol', className: 'slate-answers' }),
         bold: withProps(PlateLeaf, { as: 'strong' }),
         h1: withProps(PlateElement, {
           as: 'h1',
@@ -65,7 +70,7 @@ export function PlateEditor({ markdownContent }) {
         h3: withProps(PlateElement, {
           as: 'h3',
           className:
-            'mt-[1em] pb-px font-heading text-xl font-semibold tracking-tight',
+            'mt-[1em] pb-px font-heading text-xl font-semibold tracking-tight slate-h3',
         }),
         h4: withProps(PlateElement, {
           as: 'h4',
@@ -83,13 +88,14 @@ export function PlateEditor({ markdownContent }) {
         italic: withProps(PlateLeaf, { as: 'em' }),
         p: withProps(PlateElement, {
           as: 'p',
-          className: 'mb-4',
+          className: 'mb-4 slate-p',
         }),
         underline: withProps(PlateLeaf, { as: 'u' }),
       },
     },
     plugins: [
       BlockquotePlugin,
+      ListPlugin,
       HeadingPlugin,
       BoldPlugin,
       ItalicPlugin,
@@ -108,6 +114,13 @@ export function PlateEditor({ markdownContent }) {
     }
   }, [markdownContent]);
 
+  // Call onEditorReady with the editor instance when it's available
+  useEffect(() => {
+    if (onEditorReady && editor) {
+      onEditorReady(editor);
+    }
+  }, [editor, onEditorReady]);
+
   return (
     <Plate
       editor={editor}
@@ -116,13 +129,15 @@ export function PlateEditor({ markdownContent }) {
         setDebugValue(value);
       }}
     >
-      <EditorContainer>
-        <Editor
-          placeholder="Type here..."
-          autoFocus={false}
-          spellCheck={false}
-        />
-      </EditorContainer>
+      <div className='slate-quiz-container'>
+        <EditorContainer>
+          <Editor
+            placeholder="Type here..."
+            autoFocus={false}
+            spellCheck={false}
+          />
+        </EditorContainer>
+      </div>
 
       {/* Debugging Section */}
       {/*
