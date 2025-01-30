@@ -26,12 +26,13 @@ import { INPUT_TYPES } from '@/tools/libs/constants/inputs';
 import submitPrompt from '@/tools/libs/services/submitPrompt';
 import evaluateCondition from '@/tools/libs/utils/evaluateCondition';
 import { convertResponseToMarkdown } from '@/tools/libs/utils/markdownConverter';
+import { usePlateEditor } from '@udecode/plate/react';
+import { MarkdownPlugin } from '@udecode/plate-markdown';
 
 const {
   setCommunicatorLoading,
   setFormOpen,
   setResponse,
-  setMarkdownContent,
   addStateToEditHistory,
 } = toolActions;
 
@@ -55,6 +56,10 @@ const ToolRequestForm = (props) => {
     defaultValues,
   });
   const watchedValues = useWatch({ control });
+
+  const markdownEditor = usePlateEditor({
+    plugins: [MarkdownPlugin],
+  });
 
   const handleSubmitMultiForm = async (values) => {
     try {
@@ -144,11 +149,16 @@ const ToolRequestForm = (props) => {
       );
 
       const markdown = convertResponseToMarkdown(response, id);
+
+      // Use the editor's markdown API to process the content
+      const editorMarkdownData = markdownEditor.api.markdown.deserialize(markdown);
+      markdownEditor.children = editorMarkdownData;
+      const markdownToSave = markdownEditor.api.markdown.serialize();
+
       dispatch(setResponse(response));
-      dispatch(setMarkdownContent(markdown));
       dispatch(
         addStateToEditHistory({
-          content: markdown,
+          content: markdownToSave,
           timestamp: Date.now(),
           type: EDIT_HISTORY_TYPES.INITIAL,
         })
