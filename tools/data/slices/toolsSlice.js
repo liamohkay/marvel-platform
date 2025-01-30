@@ -12,15 +12,21 @@ const communicator = {
   prompt: null,
   response: null,
   editorState: {
-    markdownContent: null,
-    editHistory: [],
-    /* 
+    /*
       {
         "content": string
         "timestamp": timestamp,
         "type": "initial" | "auto-save" | "manual-save" | "restore"
       }
     */
+    currentState: {
+      content: null,
+      timestamp: null,
+      type: null,
+    },
+    editHistory: [], // Contains all changes including current
+    undoStack: [],
+    redoStack: [],
   },
   communicatorLoading: false,
   formOpen: true,
@@ -49,12 +55,38 @@ const tools = createSlice({
     setResponse: (state, action) => {
       state.response = action.payload;
     },
-    setMarkdownContent: (state, action) => {
-      state.editorState.markdownContent = action.payload;
-    },
     addStateToEditHistory: (state, action) => {
-      if (state.editorState.editHistory.length >= 15) state.editorState.editHistory.shift();
-      state.editorState.editHistory.push(action.payload);
+      if (!state.editorState.currentState.content) {
+        state.editorState.currentState = action.payload;
+        state.editorState.editHistory = [action.payload];
+        return;
+      }
+
+      if (action.payload.content === state.editorState.currentState.content) {
+        return;
+      }
+
+      state.editorState.redoStack = [];
+      state.editorState.undoStack.push(state.editorState.currentState);
+      state.editorState.currentState = action.payload;
+
+      // Update editHistory with all states
+      state.editorState.editHistory = [
+        ...state.editorState.undoStack,
+        state.editorState.currentState
+      ].slice(-15);
+    },
+    undo: (state) => {
+      if (state.editorState.undoStack.length > 0) {
+        state.editorState.redoStack.push(state.editorState.currentState);
+        state.editorState.currentState = state.editorState.undoStack.pop();
+      }
+    },
+    redo: (state) => {
+      if (state.editorState.redoStack.length > 0) {
+        state.editorState.undoStack.push(state.editorState.currentState);
+        state.editorState.currentState = state.editorState.redoStack.pop();
+      }
     },
     setError: (state, action) => {
       state.error = action.payload;
