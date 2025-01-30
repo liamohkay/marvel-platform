@@ -73,7 +73,7 @@ const tools = createSlice({
       // Update editHistory with all states
       state.editorState.editHistory = [
         ...state.editorState.undoStack,
-        state.editorState.currentState
+        state.editorState.currentState,
       ].slice(-15);
     },
     undo: (state) => {
