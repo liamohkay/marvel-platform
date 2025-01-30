@@ -1,8 +1,28 @@
-
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
+.slate-h1 {
+  font-family: "Satoshi Bold", sans-serif;
+  font-size: 20px; 
+  line-height: 27px; 
+  font-weight: 700;
+  letter-spacing: -0.02em; 
+  text-align: left;
+  color: #ffffff;
+  margin-top: 20px; 
+  white-space: pre-wrap;
+}
+.slate-p {
+  font-family: "Satoshi Regular", sans-serif;
+  font-size: 20px; 
+  line-height: 27px; 
+  font-weight: 400;
+  letter-spacing: -0.02em; 
+  text-align: left;
+  color: #ffffff;
+  white-space: pre-wrap; 
+}
 /*
 Roboto-Mono font imported here
 */

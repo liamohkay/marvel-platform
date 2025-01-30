@@ -12,13 +12,19 @@ const convertQuizToMarkdown = (response) => {
     .map((question, index) => {
       const escapedQuestion = escapeMarkdown(question.question);
       const questionText = `# ${index + 1}. ${escapedQuestion}\n`;
+<<<<<<< HEAD
+=======
+
+      // Render each choice as a separate paragraph
+>>>>>>> a57498d (Feature/2.2 text editor task1 (#8))
       const choices = question.choices
         .map(
           (choice) =>
             `&nbsp;&nbsp;${choice.key}. ${escapeMarkdown(choice.value)}`
         )
-        .join('\n');
-      return `${questionText}${choices}`;
+        .join('\n\n');
+
+      return `${questionText}\n${choices}`;
     })
     .join('\n\n');
 };

@@ -1,7 +1,7 @@
 {
   "$schema": "https://ui.shadcn.com/schema.json",
   "aliases": {
-    "components": "@/components",
+    "components": "@/tools/components",
     "hooks": "@/hooks",
     "lib": "@/lib",
     "ui": "@/components/ui",
@@ -11,7 +11,7 @@
   "registries": {
     "plate": {
       "aliases": {
-        "ui": "@/components/plate-ui"
+        "ui": "@/tools/components/DocumentEditor/plate-ui"
       },
       "url": "https://platejs.org/r"
     }
