@@ -29,15 +29,11 @@ import { HeadingPlugin } from '@udecode/plate-heading/react';
 import { MarkdownPlugin } from '@udecode/plate-markdown';
 import { Editor, EditorContainer } from '../plate-ui/editor';
 
-import { convertResponseToMarkdown } from '@/tools/libs/utils/markdownConverter';
-
-import tools from '@/tools/data/slices/toolsSlice';
 import { EDIT_HISTORY_TYPES } from '@/tools/libs/constants/editor';
 
 export function PlateEditor({ markdownContent }) {
   const [debugValue, setDebugValue] = useState([]);
   const dispatch = useDispatch();
-  const { editorState } = useSelector((state) => state.tools);
 
   const editorInstance = createPlateEditor({
     plugins: [
@@ -59,29 +55,6 @@ export function PlateEditor({ markdownContent }) {
       timeoutId = window.setTimeout(() => callback(...args), wait);
     };
   };
-
-  const handleAutosave = debounce((editorContent) => {
-    // Serialize platejs editor content to markdown for state save
-    const editorMarkdown = editorInstance.api.markdown.serialize(editorContent)
-    const { editHistory } = editorState;
-    // Don't autosave if last editor content is same as new changes
-    if (editorMarkdown === editHistory[editHistory.length - 1]?.content) return;
-
-    const newHistoryEntry = {
-      timestamp: Date.now(),
-      content: editorMarkdown,
-      type: EDIT_HISTORY_TYPES.AUTO_SAVE,
-    };
-
-    dispatch(addStateToEditHistory(newHistoryEntry)); // Save to state
-    // axios.post(FIREBASE_FUNCTION_URL, newHistoryEntry); // Save to firestore
-
-  }, 2000);
-
-  // Deserialize raw Markdown content into editor value
-  const parsedMarkdownContent = markdownContent
-    ? editorInstance.api.markdown.deserialize(markdownContent)
-    : [];
 
   const editor = usePlateEditor({
     override: {
@@ -136,13 +109,30 @@ export function PlateEditor({ markdownContent }) {
       StrikethroughPlugin,
       MarkdownPlugin,
     ],
-    value: parsedMarkdownContent || [],
   });
+
+  const handleAutosave = debounce((editorContent) => {
+    // Serialize platejs editor content to markdown for state save
+    const editorMarkdown = editor.api.markdown.serialize(editorContent)
+
+    const newHistoryEntry = {
+      timestamp: Date.now(),
+      content: editorMarkdown,
+      type: EDIT_HISTORY_TYPES.AUTO_SAVE,
+    };
+
+    dispatch(addStateToEditHistory(newHistoryEntry)); // Save to state
+    // axios.post(FIREBASE_FUNCTION_URL, newHistoryEntry); // Save to firestore
+  }, 2000);
 
   useEffect(() => {
     if (markdownContent) {
       const content = editorInstance.api.markdown.deserialize(markdownContent);
       setDebugValue(content);
+
+      // Update editor's internal state
+      editor.children = content;
+      editor.onChange();
     }
   }, [markdownContent]);
 

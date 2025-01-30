@@ -8,16 +8,28 @@ import { useSelector } from 'react-redux';
 import { actions as toolActions } from '@/tools/data';
 
 import DocumentEditor from '../../components/DocumentEditor/DocumentEditor';
+import { useDispatch } from 'react-redux';
 
-const { addStateToEditHistory } = toolActions;
+const { undo, redo } = toolActions;
 
 const QuizResponse = () => {
-  const { editorState } = useSelector((state) => state.tools);
-  const markdownContent = editorState.editHistory[0].content ?? '';
+  const dispatch = useDispatch();
+  const { content: markdownContent } = useSelector(
+    (state) => state.tools.editorState.currentState
+  );
 
+  const handleUndo = () => {
+    dispatch(undo());
+  };
+
+  const handleRedo = () => {
+    dispatch(redo());
+  };
   return (
     <Fade in>
       <Grid {...styles.mainGridProps}>
+        <button onClick={handleUndo}>Undo</button>
+        <button onClick={handleRedo}>Redo</button>
         <Grid {...styles.questionsGridProps}>
           <DocumentEditor markdownContent={markdownContent} />
         </Grid>
