@@ -3,8 +3,11 @@
 module.exports = {
   darkMode: ['class'], // Enable class-based dark mode
   content: [
-    './pages/**/*.{js,ts,jsx,tsx}', // Include all pages for Tailwind scanning
-    './components/**/*.{js,ts,jsx,tsx}', // Include components folder
+    './pages/**/*.{js,ts,jsx,tsx,mdx}',
+    './components/**/*.{js,ts,jsx,tsx,mdx}',
+    './layouts/**/*.{js,ts,jsx,tsx,mdx}',
+    './templates/**/*.{js,ts,jsx,tsx,mdx}',
+    './tools/components/editor/*.{js,ts,jsx,tsx,mdx}',
   ],
   theme: {
     extend: {
@@ -124,7 +127,9 @@ module.exports = {
     },
   },
   plugins: [
+    // eslint-disable-next-line global-require
     require('tailwindcss-animate'), // Animations
+    // eslint-disable-next-line global-require
     require('tailwind-scrollbar-hide'), // Hide scrollbars
   ],
 };

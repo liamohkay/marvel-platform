@@ -12,13 +12,16 @@ const convertQuizToMarkdown = (response) => {
     .map((question, index) => {
       const escapedQuestion = escapeMarkdown(question.question);
       const questionText = `# ${index + 1}. ${escapedQuestion}\n`;
+
+      // Render each choice as a separate paragraph
       const choices = question.choices
         .map(
           (choice) =>
             `&nbsp;&nbsp;${choice.key}. ${escapeMarkdown(choice.value)}`
         )
-        .join('\n');
-      return `${questionText}${choices}`;
+        .join('\n\n');
+
+      return `${questionText}\n${choices}`;
     })
     .join('\n\n');
 };
