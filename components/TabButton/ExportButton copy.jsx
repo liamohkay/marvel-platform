@@ -5,11 +5,9 @@ import { jsPDF } from 'jspdf';
 
 import { useSelector } from 'react-redux';
 
-import GradientOutlinedButton from '../GradientOutlinedButton';
-
 import styles from './ExportButton.module.css';
 
-import { ReactComponent as ExportIcon } from '../../assets/svg/export-icon.svg';
+import GradientOutlinedButton from '../GradientOutlinedButton';
 
 const ExportButton = () => {
   const [showDropdown, setShowDropdown] = useState(false);
@@ -73,42 +71,63 @@ const ExportButton = () => {
   return (
     <div>
       <div className={styles.buttonContainer}>
-        <GradientOutlinedButton
-          id="export-button"
-          text="Export"
-          icon={<ExportIcon width={24} height={24} />}
-          iconPlacement="left"
-          clickHandler={() => setShowDropdown(!showDropdown)}
-          color="primary" // Change this based on your theme settings
-          inverted // Set as needed
-          disabled={false} // Adjust based on logic
-          loading={false} // Adjust based on logic
-        />
+        <button type="button" onClick={() => setShowDropdown(!showDropdown)}>
+          <svg
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M7.38948 8.98354H6.45648C4.42148 8.98354 2.77148 10.6335 2.77148 12.6685V17.5435C2.77148 19.5775 4.42148 21.2275 6.45648 21.2275H17.5865C19.6215 21.2275 21.2715 19.5775 21.2715 17.5435V12.6585C21.2715 10.6295 19.6265 8.98354 17.5975 8.98354L16.6545 8.98354"
+              stroke="#9E7EFF"
+              stroke-width="1.5"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+            <path
+              d="M12.0215 2.19044V14.2314"
+              stroke="#9E7EFF"
+              stroke-width="1.5"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+            <path
+              d="M9.10645 5.11816L12.0214 2.19016L14.9374 5.11816"
+              stroke="#9E7EFF"
+              stroke-width="1.5"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+          </svg>
+          <p className={styles.buttonText}>Export</p>
+        </button>
       </div>
 
       {showDropdown && (
         <div className={styles.dropdown}>
-          <GradientOutlinedButton
-            text="Export as PDF"
-            clickHandler={handleExportPDF}
-            color="secondary"
-            inverted={false}
-            disabled={false}
-          />
-          <GradientOutlinedButton
-            text="Export as Text"
-            clickHandler={handleExportText}
-            color="secondary"
-            inverted={false}
-            disabled={false}
-          />
-          <GradientOutlinedButton
-            text="Export as HTML"
-            clickHandler={handleExportHTML}
-            color="secondary"
-            inverted={false}
-            disabled={false}
-          />
+          <button
+            className={styles.dropdownBtn}
+            type="button"
+            onClick={handleExportPDF}
+          >
+            Export as PDF
+          </button>
+          <button
+            className={styles.dropdownBtn}
+            type="button"
+            onClick={handleExportText}
+          >
+            Export as Text
+          </button>
+          <button
+            className={styles.dropdownBtn}
+            type="button"
+            onClick={handleExportHTML}
+          >
+            Export as HTML
+          </button>
         </div>
       )}
     </div>
