@@ -1,26 +1,14 @@
-// file location function/utils/versionHistory.js
+import { saveVersion } from '@/store/documentSlice';
 
 /**
- * to add a new version to the edit history
+ * Saves a new version in the Redux store.
  * 
- * @param {array} editHistory - the current array of edit history
- * @param {string} currentContent - current Markdown content to save
- * @returns {Array} the updated edit history array which is capped at 15 versions
+ * @param {object} store - Redux store dispatch function.
+ * @param {string} currentContent - The Markdown content to save.
  */
+export const saveVersionToHistory = (store, currentContent) => {
+    const timestamp = new Date().toISOString(); // Generate a timestamp for tracking
 
-export const saveVersionToHistory = (editHistory, currentContent) => 
-{
-    const timestamp = new Date().toISOString(); // this generate a timestamp for the version
-    const newEntry = {content: currentContent, timestamp};
-
-    // this code is to ensure that history doesn't exceed 15 entries
-    if (editHistory.length >= 15)
-    {
-        editHistory.shift(); // this line will remove the oldest version
-    }
-
-    // this line will add the new version to the history array
-    editHistory.push(newEntry);
-
-    return editHistory;
+    // Dispatch to Redux store to track history
+    store.dispatch(saveVersion({ content: currentContent, timestamp }));
 };

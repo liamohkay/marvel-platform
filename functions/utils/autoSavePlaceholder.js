@@ -1,8 +1,9 @@
-// file: utils/autoSavePlaceholder.js
 import { getFirestore, doc, updateDoc } from 'firebase/firestore';
 import { initializeApp } from 'firebase/app';
-import { store } from '../store/store';
+import { saveVersion } from '@/store/documentSlice';
+import { store } from '@/store/index';
 
+// Firebase configuration
 const firebaseConfig = {
     apiKey: process.env.NEXT_PUBLIC_FIREBASE_CLIENT_API_KEY,
     authDomain: process.env.NEXT_PUBLIC_FIREBASE_CLIENT_AUTH_DOMAIN,
@@ -16,21 +17,25 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
-export const autoSave = async (newContent, documentId, isUndoRedo = false) => {
-    if (!isUndoRedo) {
-        const editorState = store.getState().editor;
-        const docRef = doc(db, 'editorState', documentId);
+/**
+ * Auto-save function that updates Firestore with the latest content.
+ * 
+ * @param {string} newContent - The Markdown content from the editor
+ * @param {string} documentId - Firestore document ID where editor state is stored
+ */
+export const autoSave = async (newContent, documentId) => {
+    store.dispatch(saveVersion(newContent));
 
-        try {
-            await updateDoc(docRef, {
-                markdownContent: newContent,
-                lastEditedAt: new Date().toISOString(),
-                editHistory: editorState.editHistory,
-            });
+    const docRef = doc(db, 'editorState', documentId);
+    try {
+        await updateDoc(docRef, {
+            markdownContent: newContent,
+            lastEditedAt: new Date().toISOString(),
+            editHistory: store.getState().document.editHistory,
+        });
 
-            console.log("Auto-saved to Firestore:", newContent);
-        } catch (error) {
-            console.error("Error saving to Firestore:", error);
-        }
+        console.log("Auto-saved to Firestore:", newContent);
+    } catch (error) {
+        console.error("Error saving to Firestore:", error);
     }
 };
