@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 
-// import IosShareIcon from '@mui/icons-material/IosShare';
 import { saveAs } from 'file-saver';
 import { jsPDF } from 'jspdf';
 import { useSelector } from 'react-redux';
@@ -13,6 +12,7 @@ const ExportButton = () => {
   );
 
   const handleExportPDF = () => {
+    // eslint-disable-next-line new-cap
     const doc = new jsPDF();
     doc.text(markdownContent, 10, 10);
     doc.save('document.pdf');

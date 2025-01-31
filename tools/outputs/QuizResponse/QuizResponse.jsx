@@ -7,6 +7,8 @@ import { Fade, Grid } from '@mui/material';
 import { useSelector } from 'react-redux';
 import { actions as toolActions } from '@/tools/data';
 
+import ExportButton from '@/components/TabButton/ExportButton';
+
 import DocumentEditor from '../../components/DocumentEditor/DocumentEditor';
 import { useDispatch } from 'react-redux';
 
@@ -26,15 +28,25 @@ const QuizResponse = () => {
     dispatch(redo());
   };
   return (
+<<<<<<< HEAD
     <Fade in>
       <Grid {...styles.mainGridProps}>
         <button onClick={handleUndo}>Undo</button>
         <button onClick={handleRedo}>Redo</button>
         <Grid {...styles.questionsGridProps}>
           <DocumentEditor markdownContent={markdownContent} />
+=======
+    <>
+      <ExportButton />
+      <Fade in>
+        <Grid {...styles.mainGridProps}>
+          <Grid {...styles.questionsGridProps}>
+            <DocumentEditor markdownContent={markdownContent} />
+          </Grid>
+>>>>>>> be737ff (Testing Export Button implementation.)
         </Grid>
-      </Grid>
-    </Fade>
+      </Fade>
+    </>
   );
 };
 
