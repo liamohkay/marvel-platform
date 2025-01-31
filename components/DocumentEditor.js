@@ -1,36 +1,31 @@
-// file location: components/DocumentEditor.js
-
-import React, { useState, useRef, useEffect } from 'react';
+// file: components/DocumentEditor.js
+import React, { useRef, useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { setContent, undo, redo } from '../store/editorSlice';
 import { PlateEditor, useEditorState } from '@udecode/plate';
 import { autoSave } from '../utils/autoSavePlaceholder';
-import { saveVersionToHistory } from '../utils/versionHistory';
 import { useHistoryPlugin } from '@udecode/plate-history';
-import { getFirestore, doc, updateDoc } from 'firebase/firestore';
-import { initializeApp } from 'firebase/app';
+import styled from 'styled-components';
 
-// Firebase configuration
-const firebaseConfig = {
-    apiKey: process.env.NEXT_PUBLIC_FIREBASE_CLIENT_API_KEY,
-    authDomain: process.env.NEXT_PUBLIC_FIREBASE_CLIENT_AUTH_DOMAIN,
-    projectId: process.env.NEXT_PUBLIC_FIREBASE_CLIENT_PROJECT_ID,
-    storageBucket: process.env.NEXT_PUBLIC_FIREBASE_CLIENT_STORAGE_BUCKET,
-    messagingSenderId: process.env.NEXT_PUBLIC_FIREBASE_CLIENT_MESSAGING_SENDER_ID,
-    appId: process.env.NEXT_PUBLIC_FIREBASE_CLIENT_APP_ID,
-};
+// Styled buttons
+const Button = styled.button`
+    background: #007bff;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    margin: 5px;
+    cursor: pointer;
+    border-radius: 5px;
 
-// Initialize Firebase
-const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
+    &:disabled {
+        background: gray;
+        cursor: not-allowed;
+    }
+`;
 
 const DocumentEditor = ({ documentId }) => {
-    const [editorState, setEditorState] = useState({
-        markdownContent: "",
-        lastEditedAt: null,
-        editHistory: [],
-        editHistoryIndex: -1,
-    });
-
-    // Reference to the editor instance
+    const dispatch = useDispatch();
+    const editorState = useSelector((state) => state.editor);
     const editorRef = useRef(null);
 
     // Initialize Plate.js with history plugin
@@ -44,77 +39,38 @@ const DocumentEditor = ({ documentId }) => {
     }, [editor]);
 
     /**
+     * Handles content changes and updates Redux + Firestore
+     */
+    const handleChange = (newContent) => {
+        dispatch(setContent(newContent));
+        autoSave(newContent, documentId);
+    };
+
+    /**
      * Handles Undo action
      */
     const handleUndo = () => {
-        if (!editorRef.current) return;
-
-        editorRef.current.undo(); // Plate.js Undo
-
-        setEditorState((prevState) => {
-            if (prevState.editHistoryIndex > 0) {
-                const newIndex = prevState.editHistoryIndex - 1;
-                return {
-                    ...prevState,
-                    markdownContent: prevState.editHistory[newIndex].content,
-                    editHistoryIndex: newIndex,
-                };
-            }
-            return prevState;
-        });
-
-        updateFirestoreWithCurrentState(true);
+        dispatch(undo());
+        autoSave(editorState.markdownContent, documentId, true);
     };
 
     /**
      * Handles Redo action
      */
     const handleRedo = () => {
-        if (!editorRef.current) return;
-
-        editorRef.current.redo(); // Plate.js Redo
-
-        setEditorState((prevState) => {
-            if (prevState.editHistoryIndex < prevState.editHistory.length - 1) {
-                const newIndex = prevState.editHistoryIndex + 1;
-                return {
-                    ...prevState,
-                    markdownContent: prevState.editHistory[newIndex].content,
-                    editHistoryIndex: newIndex,
-                };
-            }
-            return prevState;
-        });
-
-        updateFirestoreWithCurrentState(true);
-    };
-
-    /**
-     * Updates Firestore with the current editor state.
-     * @param {boolean} isUndoRedo - If true, prevents redundant saves during undo/redo.
-     */
-    const updateFirestoreWithCurrentState = async (isUndoRedo = false) => {
-        const { markdownContent, lastEditedAt, editHistory } = editorState;
-        const docRef = doc(db, 'editorState', documentId);
-
-        try {
-            await updateDoc(docRef, {
-                markdownContent,
-                lastEditedAt: new Date().toISOString(),
-                editHistory,
-            });
-
-            console.log("Updated Firestore with Undo/Redo action:", markdownContent);
-        } catch (error) {
-            console.error("Error updating Firestore:", error);
-        }
+        dispatch(redo());
+        autoSave(editorState.markdownContent, documentId, true);
     };
 
     return (
         <div>
-            <button onClick={handleUndo} disabled={editorState.editHistoryIndex <= 0}>Undo</button>
-            <button onClick={handleRedo} disabled={editorState.editHistoryIndex >= editorState.editHistory.length - 1}>Redo</button>
-            <PlateEditor ref={editorRef} />
+            <Button onClick={handleUndo} disabled={editorState.editHistoryIndex <= 0}>
+                Undo
+            </Button>
+            <Button onClick={handleRedo} disabled={editorState.editHistoryIndex >= editorState.editHistory.length - 1}>
+                Redo
+            </Button>
+            <PlateEditor ref={editorRef} value={editorState.markdownContent} onChange={handleChange} />
         </div>
     );
 };
