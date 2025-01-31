@@ -9,6 +9,8 @@ import { actions as toolActions } from '@/tools/data';
 
 import ExportButton from '@/components/TabButton/ExportButton';
 
+import ExportButton from '@/components/TabButton/ExportButton';
+
 import DocumentEditor from '../../components/DocumentEditor/DocumentEditor';
 import { useDispatch } from 'react-redux';
 
@@ -29,6 +31,7 @@ const QuizResponse = () => {
   };
   return (
 <<<<<<< HEAD
+<<<<<<< HEAD
     <Fade in>
       <Grid {...styles.mainGridProps}>
         <button onClick={handleUndo}>Undo</button>
@@ -36,6 +39,8 @@ const QuizResponse = () => {
         <Grid {...styles.questionsGridProps}>
           <DocumentEditor markdownContent={markdownContent} />
 =======
+=======
+>>>>>>> 64111b4f05b4094d16dd5e838fe1b49362ff2ea6
     <>
       <ExportButton />
       <Fade in>
@@ -43,7 +48,10 @@ const QuizResponse = () => {
           <Grid {...styles.questionsGridProps}>
             <DocumentEditor markdownContent={markdownContent} />
           </Grid>
+<<<<<<< HEAD
 >>>>>>> be737ff (Testing Export Button implementation.)
+=======
+>>>>>>> 64111b4f05b4094d16dd5e838fe1b49362ff2ea6
         </Grid>
       </Fade>
     </>

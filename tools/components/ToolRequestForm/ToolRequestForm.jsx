@@ -23,6 +23,10 @@ import { firestore } from '@/libs/redux/store';
 import { fetchToolHistory, actions as toolActions } from '@/tools/data';
 import { EDIT_HISTORY_TYPES } from '@/tools/libs/constants/editor';
 import { INPUT_TYPES } from '@/tools/libs/constants/inputs';
+<<<<<<< HEAD
+=======
+
+>>>>>>> 64111b4f05b4094d16dd5e838fe1b49362ff2ea6
 import submitPrompt from '@/tools/libs/services/submitPrompt';
 import evaluateCondition from '@/tools/libs/utils/evaluateCondition';
 import { convertResponseToMarkdown } from '@/tools/libs/utils/markdownConverter';
