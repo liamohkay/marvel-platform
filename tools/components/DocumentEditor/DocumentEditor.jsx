@@ -1,11 +1,15 @@
 'use client';
 
 import React, { useState } from 'react';
+import React, { useState } from 'react';
 
 import { PlateEditor } from './editor/plate-editor';
 import { EditorToolbar } from './plate-ui/toolbar';
+import { EditorToolbar } from './plate-ui/toolbar';
 
 const DocumentEditor = ({ markdownContent }) => {
+  const [editor, setEditor] = useState(null);
+
   const [editor, setEditor] = useState(null);
 
   return (
@@ -19,7 +23,7 @@ const DocumentEditor = ({ markdownContent }) => {
         <PlateEditor 
           markdownContent={markdownContent} 
           onEditorReady={(editorInstance) => {
-            console.log('Editor instance received:', editorInstance);
+            // console.log('Editor instance received:', editorInstance);
             setEditor(editorInstance);
           }}
         />
