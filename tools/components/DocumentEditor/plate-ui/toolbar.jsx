@@ -144,16 +144,16 @@ export const EditorToolbar = ({ editor }) => {
     const { selection } = editor;
     if (!selection) return false;
 
-    // Get the current node at the selection
-    const [match] = editor.nodes({
-      match: (node) => {
-        // Explicitly check if the node type matches the given type
-        return node.type === type;
-      },
-      at: selection,
-    });
-
-    return !!match;
+    // Safely check for node type
+    try {
+      const [match] = editor.nodes({
+        match: (node) => node.type === type,
+        at: selection,
+      });
+      return !!match;
+    } catch {
+      return false;
+    }
   };
 
   // Toggle mark (bold, italic, underline)
@@ -173,26 +173,42 @@ export const EditorToolbar = ({ editor }) => {
 
   // Toggle block type (headings, lists, block quotes)
   const toggleBlock = (type) => {
-    if (!editor) return;
-    
-    // If no type is provided, reset to paragraph
-    if (!type) {
-      editor.setNodes({ type: 'paragraph' });
-      setHeadingLevel('');
+    if (!editor) {
+      console.warn('Toolbar: Editor not ready');
       return;
     }
     
-    // Check if the block is currently the specified type
-    const isCurrentType = isBlockActive(type);
-    
-    if (isCurrentType) {
-      // If already this type, revert to paragraph
-      editor.setNodes({ type: 'paragraph' });
-      setHeadingLevel('');
-    } else {
-      // Set to the new heading type
-      editor.setNodes({ type: type });
-      setHeadingLevel(type);
+    // Existing logic with added safety checks
+    try {
+      switch (type) {
+        case 'blockquote':
+          editor.toggleNodeType('blockquote');
+          break;
+        case 'ul':
+          editor.toggleList('unordered');
+          break;
+        case 'ol':
+          editor.toggleList('ordered');
+          break;
+        default:
+          if (!type) {
+            editor.setNodes({ type: 'paragraph' });
+            setHeadingLevel('');
+            return;
+          }
+          
+          const isCurrentType = isBlockActive(type);
+          
+          if (isCurrentType) {
+            editor.setNodes({ type: 'paragraph' });
+            setHeadingLevel('');
+          } else {
+            editor.setNodes({ type: type });
+            setHeadingLevel(type);
+          }
+      }
+    } catch (error) {
+      console.warn(`Toolbar: Error toggling ${type}:`, error);
     }
   };
 

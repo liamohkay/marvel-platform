@@ -21,6 +21,8 @@ import {
   UnderlinePlugin,
 } from '@udecode/plate-basic-marks/react';
 import { BlockquotePlugin } from '@udecode/plate-block-quote/react';
+import { ListPlugin } from '@udecode/plate-list/react';
+import { ListElement } from '../plate-ui/list-element';
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { HEADING_KEYS } from '@udecode/plate-heading';
 import { HeadingPlugin } from '@udecode/plate-heading/react';
@@ -71,6 +73,7 @@ export function PlateEditor(props) {
   // Plugins for editor instance & useplateeditor
   const plugins = [
     BlockquotePlugin,
+    ListPlugin,
     ParagraphPlugin,
     HeadingPlugin,
     BoldPlugin,
@@ -103,6 +106,8 @@ export function PlateEditor(props) {
     override: {
       components: {
         blockquote: withProps(PlateElement, { as: 'blockquote', className: 'my-2 border-l-4 pl-4 text-muted-foreground italic' }),
+        ul: withProps(ListElement, { variant: 'ul', className: 'slate-answers' }),
+        ol: withProps(ListElement, { variant: 'ol', className: 'slate-answers' }),
         bold: withProps(PlateLeaf, { as: 'strong' }),
         italic: withProps(PlateLeaf, { as: 'em' }),
         underline: withProps(PlateLeaf, { as: 'u' }),
@@ -163,6 +168,7 @@ export function PlateEditor(props) {
 
   return (
     <Plate editor={editor} onChange={({ value }) => handleAutosave(value)}>
+       <div className='slate-quiz-container'>
       <EditorContainer className="p-6 bg-background text-foreground rounded-lg shadow-editor">
         <Editor
           placeholder="Start typing here..."
@@ -171,6 +177,7 @@ export function PlateEditor(props) {
           className="text-foreground"
         />
       </EditorContainer>
+      </div>
     </Plate>
   );
 }
