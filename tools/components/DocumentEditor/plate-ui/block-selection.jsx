@@ -4,7 +4,7 @@ import React from 'react';
 
 import { cn } from '@udecode/cn';
 import { useEditorPlugin } from '@udecode/plate-core/react';
-import { DndPlugin } from '@udecode/plate-dnd';
+// import { DndPlugin } from '@udecode/plate-dnd';
 import { useBlockSelected } from '@udecode/plate-selection/react';
 import { cva } from 'class-variance-authority';
 
