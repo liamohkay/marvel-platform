@@ -8,19 +8,22 @@ const styles = {
       letterSpacing: '-0.02em',
       borderRadius: '8px',
       color: '#AC92FF',
-      height: '36px',
+      height: '32px',
       '& .MuiButton-root': {
         borderRadius: '8px',
         minWidth: 'auto',
       },
-      '&:hover': {
-        backgroundColor: '#AC92FF',
-        '& .MuiSvgIcon-root': {
-          color: '#FFFFFF',
+      '& svg': {
+        marginRight: 1,
+        '& path': {
+          stroke: '#AC92FF',
         },
-        color: '#FFFFFF',
-        '& span': {
-          color: '#FFFFFF',
+      },
+      '&:hover': {
+        backgroundColor: '#0C0B17',
+        color: '#AC92FF',
+        '& svg path': {
+          stroke: '#AC92FF',
         },
       },
     },
@@ -28,13 +31,16 @@ const styles = {
   menuProps: {
     PaperProps: {
       sx: {
-        backgroundColor: '#24272F',
+        backgroundColor: '#0C0B17',
         color: '#FFFFFF',
         borderRadius: '8px',
-        border: '1px solid #AC92FF',
+        border: '1px solid rgba(255,255,255,0.3)',
         '& .MuiMenuItem-root': {
           '&:hover': {
-            backgroundColor: 'rgba(172, 146, 255, 0.1)',
+            backgroundColor: '#3E3A4B',
+          },
+          '&.Mui-selected': {
+            backgroundColor: '#0C0B17',
           },
         },
       },
@@ -45,14 +51,8 @@ const styles = {
       color: '#FFFFFF',
       fontSize: '14px',
       padding: '8px 16px',
-    },
-  },
-  iconProps: {
-    sx: {
-      marginRight: 1,
-      color: '#AC92FF',
       '&:hover': {
-        color: '#FFFFFF',
+        backgroundColor: '#3E3A4B',
       },
     },
   },

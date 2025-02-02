@@ -31,6 +31,7 @@ import {
 
 import { Separator } from './separator';
 import { withTooltip } from './tooltip';
+import ToolbarExportAdapter from './toolbar-export-adapter';
 
 // Toolbar styling consistent with Marvel's platform dark mode
 const toolbarButtonVariants = cva(
@@ -225,6 +226,11 @@ export const EditorToolbar = ({ editor }) => {
   return (
     <Toolbar className="slate-toolbar">
       <div className="slate-btn-container">
+
+        {/* Export Button with Adapter */}
+        <ToolbarExportAdapter editor={editor} />
+
+        <div className="slate-separator"></div>
         {/* Paragraph/Block Type Selection - MOVED TO THE FRONT */}
         <FormControl 
           variant="standard" 

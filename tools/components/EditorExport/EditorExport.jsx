@@ -1,9 +1,10 @@
 import { useContext, useState } from 'react';
 
-import { FileUpload } from '@mui/icons-material';
 import { Menu, MenuItem } from '@mui/material';
 
 import GradientOutlinedButton from '@/components/GradientOutlinedButton';
+
+import FileExportIcon from '@/assets/svg/FileExport.svg';
 
 import styles from './styles';
 
@@ -53,7 +54,7 @@ const EditorExport = ({ toolId, content }) => {
   return (
     <>
       <GradientOutlinedButton
-        icon={<FileUpload {...styles.iconProps} />}
+        icon={<FileExportIcon />}
         iconPlacement="left"
         clickHandler={handleClick}
         text="Export"
