@@ -21,6 +21,8 @@ import {
   UnderlinePlugin,
 } from '@udecode/plate-basic-marks/react';
 import { BlockquotePlugin } from '@udecode/plate-block-quote/react';
+import { ListPlugin } from '@udecode/plate-list/react';
+import { ListElement } from '../plate-ui/list-element';
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { HEADING_KEYS } from '@udecode/plate-heading';
 import { HeadingPlugin } from '@udecode/plate-heading/react';
@@ -34,6 +36,8 @@ import { Editor, EditorContainer } from '../plate-ui/editor';
 import { EDIT_HISTORY_TYPES } from '@/tools/libs/constants/editor';
 
 const { addStateToEditHistory } = toolActions;
+
+import { EditorToolbar } from '../plate-ui/toolbar';
 
 /**
  * Creates a debounced function that delays invoking the callback
@@ -71,6 +75,7 @@ export function PlateEditor(props) {
   // Plugins for editor instance & useplateeditor
   const plugins = [
     BlockquotePlugin,
+    ListPlugin,
     ParagraphPlugin,
     HeadingPlugin,
     BoldPlugin,
@@ -92,7 +97,7 @@ export function PlateEditor(props) {
     }),
   ];
 
-  const editorInstance = createPlateEditor({ plugins: plugins });
+  const editorInstance = createPlateEditor({ plugins });
 
   // Deserialize raw Markdown content into editor value
   const parsedMarkdownContent = markdownContent
@@ -103,6 +108,8 @@ export function PlateEditor(props) {
     override: {
       components: {
         blockquote: withProps(PlateElement, { as: 'blockquote', className: 'my-2 border-l-4 pl-4 text-muted-foreground italic' }),
+        ul: withProps(ListElement, { variant: 'ul', className: 'slate-answers' }),
+        ol: withProps(ListElement, { variant: 'ol', className: 'slate-answers' }),
         bold: withProps(PlateLeaf, { as: 'strong' }),
         italic: withProps(PlateLeaf, { as: 'em' }),
         underline: withProps(PlateLeaf, { as: 'u' }),
@@ -120,7 +127,7 @@ export function PlateEditor(props) {
         td: withProps(PlateElement, { as: 'td', className: 'px-4 py-2' }),
       },
     },
-    plugins: plugins,
+    plugins,
     value: parsedMarkdownContent || [],
   });
 
@@ -163,6 +170,9 @@ export function PlateEditor(props) {
 
   return (
     <Plate editor={editor} onChange={({ value }) => handleAutosave(value)}>
+      <div className="mb-4">
+        <EditorToolbar editor={editor} />
+      </div>
       <EditorContainer className="p-6 bg-background text-foreground rounded-lg shadow-editor">
         <Editor
           placeholder="Start typing here..."
