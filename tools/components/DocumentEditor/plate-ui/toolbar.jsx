@@ -28,9 +28,9 @@ import {
   FormControl 
 } from '@mui/material';
 
-import { Separator } from './separator';
 import { withTooltip } from './tooltip';
 import ToolbarExportAdapter from './toolbar-export-adapter';
+import ToolbarSeparator from './ToolbarSeparator';
 
 // Toolbar styling consistent with Marvel's platform dark mode
 const toolbarButtonVariants = cva(
@@ -197,9 +197,9 @@ export const EditorToolbar = (props) => {
             setHeadingLevel('');
             return;
           }
-
+          
           const isCurrentType = isBlockActive(type);
-
+          
           if (isCurrentType) {
             editor.setNodes({ type: 'paragraph' });
             setHeadingLevel('');
@@ -230,7 +230,7 @@ export const EditorToolbar = (props) => {
         {/* Export Button with Adapter */}
         <ToolbarExportAdapter />
 
-        <div className="slate-separator"></div>
+        <ToolbarSeparator />
         {/* Paragraph/Block Type Selection - MOVED TO THE FRONT */}
         {/* <FormControl 
           variant="standard" 
@@ -293,7 +293,7 @@ export const EditorToolbar = (props) => {
           </Select>
         </FormControl> */}
 
-        <div className="slate-separator"></div>
+        <ToolbarSeparator />
 
         {/* Text Formatting Group */}
         <div className="slate-toolbar-group">
@@ -334,7 +334,7 @@ export const EditorToolbar = (props) => {
           </ToolbarButton>
         </div>
 
-        <div className="slate-separator"></div>
+        <ToolbarSeparator />
 
         {/* List Buttons */}
         <div className="slate-toolbar-group">
@@ -363,7 +363,7 @@ export const EditorToolbar = (props) => {
           </ToolbarButton>
         </div>
 
-        <div className="slate-separator"></div>
+        <ToolbarSeparator />
 
         {/* Block Quote Button */}
         <ToolbarButton
@@ -392,11 +392,6 @@ export const ToolbarLink = withCn(
   'font-medium underline underline-offset-4'
 );
 
-export const ToolbarSeparator = withCn(
-  ToolbarPrimitive.Separator,
-  'mx-2 my-1 w-px shrink-0 bg-border'
-);
-
 export const ToolbarToggleItem = withVariants(
   ToolbarPrimitive.ToggleItem,
   toolbarButtonVariants,
@@ -415,10 +410,6 @@ export const ToolbarGroup = withRef((props, ref) => {
       )}
     >
       <div className="flex items-center">{children}</div>
-
-      <div className="mx-1.5 py-0.5 group-last/toolbar-group:!hidden">
-        <Separator orientation="vertical" />
-      </div>
     </div>
   );
 });
