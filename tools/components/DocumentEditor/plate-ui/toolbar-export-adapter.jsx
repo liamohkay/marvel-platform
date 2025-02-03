@@ -1,13 +1,10 @@
-// tools/components/DocumentEditor/plate-ui/toolbar-export-adapter.jsx
 import React from 'react';
 
 import { cn } from '@udecode/cn';
 
 import EditorExport from '@/tools/components/EditorExport/EditorExport';
 
-const ToolbarExportAdapter = ({ editor }) => {
-  const content = editor?.children;
-
+const ToolbarExportAdapter = () => {
   return (
     <div className="slate-toolbar-group">
       <div
@@ -16,7 +13,7 @@ const ToolbarExportAdapter = ({ editor }) => {
           'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500'
         )}
       >
-        <EditorExport toolId="editor" content={content} />
+        <EditorExport />
       </div>
     </div>
   );

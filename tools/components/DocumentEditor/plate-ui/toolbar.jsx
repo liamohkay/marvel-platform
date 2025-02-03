@@ -228,7 +228,7 @@ export const EditorToolbar = ({ editor }) => {
       <div className="slate-btn-container">
 
         {/* Export Button with Adapter */}
-        <ToolbarExportAdapter editor={editor} />
+        <ToolbarExportAdapter />
 
         <div className="slate-separator"></div>
         {/* Paragraph/Block Type Selection - MOVED TO THE FRONT */}

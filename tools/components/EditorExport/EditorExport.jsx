@@ -1,6 +1,7 @@
 import { useContext, useState } from 'react';
 
 import { Menu, MenuItem } from '@mui/material';
+import { useSelector } from 'react-redux';
 
 import GradientOutlinedButton from '@/components/GradientOutlinedButton';
 
@@ -15,14 +16,15 @@ import { exportContent } from '@/tools/libs/utils/exportUtils';
 
 /**
  * EditorExport component provides export functionality for tool outputs
- * @param {Object} props - Component props
- * @param {string} props.toolId - The ID of the tool
- * @param {Object} props.content - The content to be exported
  */
-const EditorExport = ({ toolId, content }) => {
+const EditorExport = () => {
   const [isExporting, setIsExporting] = useState(false);
   const [anchorEl, setAnchorEl] = useState(null);
   const { handleOpenSnackBar } = useContext(AuthContext);
+
+  const { content } = useSelector(
+    (state) => state.tools.editorState.currentState
+  );
 
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
@@ -35,7 +37,7 @@ const EditorExport = ({ toolId, content }) => {
   const handleExport = async (format) => {
     try {
       setIsExporting(true);
-      await exportContent(content, format, toolId);
+      await exportContent(content, format);
       handleOpenSnackBar(ALERT_COLORS.SUCCESS, 'Export completed successfully');
     } catch (error) {
       handleOpenSnackBar(ALERT_COLORS.ERROR, error.message || 'Export failed');

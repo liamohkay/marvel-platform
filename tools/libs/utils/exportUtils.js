@@ -19,8 +19,12 @@ const markdownUtils = {
     heading: /^(#{1,6})\s+(.+)$/,
     listItem: /^(\s*(?:[-*+]|\d+\.)\s+)(.+)$/,
     codeBlock: /^```(\w*)\n([\s\S]*?)```$/,
-    emphasis: /(\*\*|__)(.*?)\1/,
+    bold: /\*\*(.*?)\*\*/g,
+    italic: /[_*](.*?)[_*]/g,
+    boldItalic: /[_*]{3}(.*?)[_*]{3}/g,
+    blockquote: /^>\s+(.+)$/,
     horizontalRule: /^[-*_]{3,}$/,
+    lineBreak: /<br\s*\/?>/g,
   },
 
   decodeEntities(text) {
@@ -31,46 +35,73 @@ const markdownUtils = {
   },
 
   parseElement(line) {
-    const patterns = Object.keys(this.patterns);
-    for (let i = 0; i < patterns.length; i += 1) {
-      const type = patterns[i];
-      const match = line.match(this.patterns[type]);
+    // Remove any <br> tags and process them as actual line breaks
+    const processedLine = line.replace(this.patterns.lineBreak, '');
 
-      if (match) {
-        switch (type) {
-          case 'heading':
-            return {
-              type: 'heading',
-              level: match[1].length,
-              content: this.decodeEntities(match[2]),
-              raw: line,
-            };
-          case 'listItem':
-            return {
-              type: 'listItem',
-              indent: match[1].length,
-              content: this.decodeEntities(match[2]),
-              raw: line,
-            };
-          default:
-            return {
-              type: 'text',
-              content: this.decodeEntities(line),
-              raw: line,
-            };
-        }
-      }
+    if (processedLine.match(this.patterns.heading)) {
+      const match = processedLine.match(this.patterns.heading);
+      return {
+        type: 'heading',
+        level: match[1].length,
+        content: this.parseInlineStyles(match[2]),
+        raw: processedLine,
+      };
     }
 
+    if (processedLine.match(this.patterns.listItem)) {
+      const match = processedLine.match(this.patterns.listItem);
+      return {
+        type: 'listItem',
+        indent: match[1].length,
+        content: this.parseInlineStyles(match[2]),
+        raw: processedLine,
+      };
+    }
+
+    if (processedLine.match(this.patterns.blockquote)) {
+      const match = processedLine.match(this.patterns.blockquote);
+      return {
+        type: 'blockquote',
+        content: this.parseInlineStyles(match[1]),
+        raw: processedLine,
+      };
+    }
     return {
       type: 'text',
-      content: this.decodeEntities(line),
-      raw: line,
+      content: this.parseInlineStyles(processedLine),
+      raw: processedLine,
     };
   },
 
+  parseInlineStyles(text) {
+    const patterns = [
+      {
+        pattern: this.patterns.boldItalic,
+        replacement: '<em><strong>$1</strong></em>',
+      },
+      { pattern: this.patterns.bold, replacement: '<strong>$1</strong>' },
+      { pattern: this.patterns.italic, replacement: '<em>$1</em>' },
+    ];
+
+    const processedText = patterns.reduce(
+      (currentText, { pattern, replacement }) =>
+        currentText.replace(pattern, replacement),
+      text
+    );
+
+    return this.decodeEntities(processedText);
+  },
+
   parse(markdown) {
-    return markdown.split('\n').map((line) => this.parseElement(line));
+    if (!markdown) return [];
+
+    // Split on actual newlines or <br> tags
+    const lines = markdown
+      .split(/\n|<br\s*\/?>/g)
+      .map((line) => line.trim())
+      .map((line) => this.parseElement(line));
+
+    return lines;
   },
 };
 
@@ -88,9 +119,11 @@ const htmlUtils = {
       case 'heading':
         return `<h${element.level} style="${this.styles.heading}">${element.content}</h${element.level}>`;
       case 'listItem':
-        return `<p style="${this.styles.text}${' '.repeat(element.indent)}${
+        return `<p style="${this.styles.text}${' '.repeat(element.indent)}">${
           element.content
         }</p>`;
+      case 'blockquote':
+        return `<blockquote style="border-left: 4px solid #ccc; padding-left: 1em; margin-left: 0">${element.content}</blockquote>`;
       default:
         return `<p style="${this.styles.text}">${element.content}</p>`;
     }
@@ -124,37 +157,180 @@ const pdfUtils = {
       pageHeight: doc.internal.pageSize.height,
       pageWidth: doc.internal.pageSize.width,
       margin: 20,
+      lineHeight: 3,
     };
   },
 
-  setFont(doc, element) {
-    switch (element.type) {
-      case 'heading':
-        doc.setFont('helvetica', 'bold');
-        doc.setFontSize(14 - (element.level - 1));
-        break;
-      default:
-        doc.setFont('helvetica', 'normal');
-        doc.setFontSize(12);
+  styles: {
+    heading: {
+      fontSize: 12,
+      fontStyle: 'bold',
+      marginBottom: 3,
+      indentation: 0,
+    },
+    listItem: {
+      fontSize: 11,
+      fontStyle: 'normal',
+      marginBottom: 2,
+      indentation: 10,
+    },
+    blockquote: {
+      fontSize: 11,
+      fontStyle: 'italic',
+      marginBottom: 2,
+      indentation: 20,
+    },
+    text: {
+      fontSize: 11,
+      fontStyle: 'normal',
+      marginBottom: 2,
+      indentation: 0,
+    },
+  },
+
+  processInlineFormats(context, text, x, y, maxWidth) {
+    const formats = [
+      { pattern: /<strong>(.*?)<\/strong>/g, style: 'bold' },
+      { pattern: /<em>(.*?)<\/em>/g, style: 'italic' },
+      { pattern: /<code>(.*?)<\/code>/g, style: 'normal' },
+    ];
+  
+    let segments = [{ text, style: 'normal' }];
+  
+    // Process each format
+    formats.forEach((format) => {
+      const newSegments = [];
+      segments.forEach((segment) => {
+        if (segment.style !== 'normal') {
+          newSegments.push(segment);
+          return;
+        }
+  
+        let lastIndex = 0;
+        const matches = [...segment.text.matchAll(format.pattern)];
+  
+        matches.forEach((match) => {
+          if (match.index > lastIndex) {
+            newSegments.push({
+              text: segment.text.slice(lastIndex, match.index),
+              style: 'normal',
+            });
+          }
+          newSegments.push({
+            text: match[1],
+            style: format.style,
+          });
+          lastIndex = match.index + match[0].length;
+        });
+  
+        if (lastIndex < segment.text.length) {
+          newSegments.push({
+            text: segment.text.slice(lastIndex),
+            style: 'normal',
+          });
+        }
+      });
+      segments = newSegments;
+    });
+  
+    let currentY = y;
+    let currentLine = '';
+    let currentSegments = [];
+    let currentX = x;
+  
+    segments.forEach((segment) => {
+      const words = segment.text.split(' ');
+      
+      words.forEach((word) => {
+        context.doc.setFont('helvetica', segment.style);
+        const testLine = currentLine + (currentLine ? ' ' : '') + word;
+        const testWidth = context.doc.getTextWidth(testLine);
+  
+        if (testWidth > maxWidth) {
+          // Render current line with proper styling
+          if (currentLine) {
+            let renderX = x;
+            currentSegments.forEach((seg) => {
+              context.doc.setFont('helvetica', seg.style);
+              context.doc.text(seg.text, renderX, currentY);
+              renderX += context.doc.getTextWidth(seg.text);
+            });
+          }
+          // Start new line
+          currentY += context.lineHeight;
+          currentLine = word;
+          currentSegments = [{ text: word, style: segment.style }];
+          currentX = x + context.doc.getTextWidth(word);
+        } else {
+          currentLine = testLine;
+          currentSegments.push({ 
+            text: (currentLine === word ? word : ' ' + word), 
+            style: segment.style 
+          });
+          currentX += context.doc.getTextWidth((currentLine === word ? word : ' ' + word));
+        }
+      });
+    });
+  
+    // Render last line if exists
+    if (currentLine) {
+      let renderX = x;
+      currentSegments.forEach((seg) => {
+        context.doc.setFont('helvetica', seg.style);
+        context.doc.text(seg.text, renderX, currentY);
+        renderX += context.doc.getTextWidth(seg.text);
+      });
     }
+  
+    return currentY;
   },
 
   addText(context, element) {
-    this.setFont(context.doc, element);
-
-    const maxWidth = context.pageWidth - context.margin * 2;
-    const textLines = context.doc.splitTextToSize(element.content, maxWidth);
-
-    if (
-      context.y + textLines.length * 10 >
-      context.pageHeight - context.margin
-    ) {
-      context.doc.addPage();
-      context.y = 20;
+    const style = this.styles[element.type] || this.styles.text;
+  
+    // Handle empty lines
+    if (!element.content.trim()) {
+      context.y += context.lineHeight;
+      return;
     }
-
-    context.doc.text(textLines, context.margin, context.y);
-    context.y += textLines.length * 10;
+  
+    // Set basic styles
+    context.doc.setFontSize(style.fontSize);
+    context.doc.setFont('helvetica', element.type === 'heading' ? 'bold' : style.fontStyle);
+  
+    // Handle page breaks
+    if (context.y + style.marginBottom > context.pageHeight - context.margin) {
+      context.doc.addPage();
+      context.y = context.margin;
+    }
+  
+    const x = context.margin + style.indentation;
+    const maxWidth = context.pageWidth - (2 * context.margin) - style.indentation;
+  
+    if (element.type === 'heading') {
+      // For headings, just clean HTML and split into lines
+      const cleanText = element.content.replace(/<[^>]*>/g, '');
+      const lines = context.doc.splitTextToSize(cleanText, maxWidth);
+      
+      lines.forEach((line, index) => {
+        const yPos = context.y + (index * context.lineHeight);
+        context.doc.text(line, x, yPos);
+      });
+  
+      context.y += (lines.length * context.lineHeight);
+    } else {
+      // For regular text, process formatting (bold, italic, etc.)
+      const finalY = this.processInlineFormats(context, element.content, x, context.y, maxWidth);
+      context.y = finalY;
+    }
+  
+    // Add margin after the element
+    context.y += style.marginBottom;
+  
+    // Special handling for lists
+    if (element.type === 'listItem') {
+      context.doc.text('•', x - 5, context.y - context.lineHeight - style.marginBottom);
+    }
   },
 
   convert(elements) {
@@ -167,13 +343,14 @@ const pdfUtils = {
 // Plain text conversion
 const plainTextUtils = {
   convertElement(element) {
+    const cleanContent = element.content.replace(/<[^>]*>/g, '');
     switch (element.type) {
       case 'heading':
-        return element.content;
+        return cleanContent;
       case 'listItem':
-        return `${' '.repeat(element.indent)}${element.content}`;
+        return `${' '.repeat(element.indent)}${cleanContent}`;
       default:
-        return element.content;
+        return cleanContent;
     }
   },
 
@@ -208,9 +385,9 @@ const EXPORT_FORMATS = {
   },
 };
 
-const generateFileName = (toolId, extension) => {
+const generateFileName = (extension) => {
   const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
-  return `${toolId.toLowerCase()}-${timestamp}.${extension}`;
+  return `editor-export-${timestamp}.${extension}`;
 };
 
 const downloadFile = (blob, filename) => {
@@ -226,13 +403,12 @@ const downloadFile = (blob, filename) => {
 
 /**
  * Exports content in different formats
- * @param {string} response - The content to export
+ * @param {string} content - The content to export
  * @param {string} format - The format to export to ('pdf', 'plaintext', 'html')
- * @param {string} toolId - The ID of the tool
  * @returns {Promise<{ success: boolean, filename: string }>}
  * @throws {Error}
  */
-export const exportContent = async (response, format, toolId) => {
+export const exportContent = async (content, format) => {
   if (!format || !EXPORT_FORMATS[format]) {
     const supportedFormats = Object.keys(EXPORT_FORMATS).join(', ');
     throw new Error(
@@ -240,13 +416,13 @@ export const exportContent = async (response, format, toolId) => {
     );
   }
 
-  if (!response || !toolId) {
-    throw new Error('Content and tool ID are required for export');
+  if (!content) {
+    throw new Error('Content is required for export');
   }
 
   const formatConfig = EXPORT_FORMATS[format];
-  const filename = generateFileName(toolId, formatConfig.extension);
-  const blob = await formatConfig.convert(response);
+  const filename = generateFileName(formatConfig.extension);
+  const blob = await formatConfig.convert(content);
   downloadFile(blob, filename);
 
   return { success: true, filename };
