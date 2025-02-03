@@ -1,9 +1,5 @@
 import * as React from 'react';
 
-import * as ToolbarPrimitive from '@radix-ui/react-toolbar';
-import { cn, withCn, withRef, withVariants } from '@udecode/cn';
-import { cva } from 'class-variance-authority';
-
 import { 
   FormatBold as BoldIcon, 
   FormatItalic as ItalicIcon, 
@@ -18,6 +14,9 @@ import {
   FormatListNumbered as NumberedListIcon, 
   FormatQuote as BlockQuoteIcon 
 } from '@mui/icons-material';
+import * as ToolbarPrimitive from '@radix-ui/react-toolbar';
+import { cn, withCn, withRef, withVariants } from '@udecode/cn';
+import { cva } from 'class-variance-authority';
 
 import { 
   FormatSize as HeadingIcon,
@@ -90,13 +89,13 @@ export const Toolbar = withCn(
 const ToolbarButton = withTooltip(
   React.forwardRef((props, ref) => {
     const { 
-      children, 
-      className, 
-      tooltip, 
-      isActive, 
-      size = 'sm', 
-      onClick, 
-      ...restProps 
+      children,
+      className,
+      tooltip,
+      isActive,
+      size = 'sm',
+      onClick,
+      ...restProps
     } = props;
 
     return (
@@ -119,13 +118,14 @@ const ToolbarButton = withTooltip(
 );
 
 // Toolbar for Plate.js Editor
-export const EditorToolbar = ({ editor }) => {
+export const EditorToolbar = (props) => {
+  const { editor } = props;
   const [headingLevel, setHeadingLevel] = React.useState('');
 
   // Check if a mark is active
   const isMarkActive = (format) => {
     if (!editor) return false;
-    
+
     // Manually check for active marks using Plate.js editor methods
     const { selection } = editor;
     if (!selection) return false;
@@ -141,7 +141,7 @@ export const EditorToolbar = ({ editor }) => {
   // Check if a block is active
   const isBlockActive = (type) => {
     if (!editor) return false;
-    
+
     const { selection } = editor;
     if (!selection) return false;
 
@@ -160,10 +160,10 @@ export const EditorToolbar = ({ editor }) => {
   // Toggle mark (bold, italic, underline)
   const toggleMark = (format) => {
     if (!editor) return;
-    
+
     // Check if the mark is currently active
     const isActive = isMarkActive(format);
-    
+
     // If active, remove the mark; if not active, add the mark
     if (isActive) {
       editor.removeMark(format);
@@ -178,7 +178,7 @@ export const EditorToolbar = ({ editor }) => {
       console.warn('Toolbar: Editor not ready');
       return;
     }
-    
+
     // Existing logic with added safety checks
     try {
       switch (type) {
@@ -197,9 +197,9 @@ export const EditorToolbar = ({ editor }) => {
             setHeadingLevel('');
             return;
           }
-          
+
           const isCurrentType = isBlockActive(type);
-          
+
           if (isCurrentType) {
             editor.setNodes({ type: 'paragraph' });
             setHeadingLevel('');
@@ -220,7 +220,7 @@ export const EditorToolbar = ({ editor }) => {
     { value: 'h3', label: 'Heading 3' },
     { value: 'h4', label: 'Heading 4' },
     { value: 'h5', label: 'Heading 5' },
-    { value: 'h6', label: 'Heading 6' }
+    { value: 'h6', label: 'Heading 6' },
   ];
 
   return (
@@ -232,7 +232,7 @@ export const EditorToolbar = ({ editor }) => {
 
         <div className="slate-separator"></div>
         {/* Paragraph/Block Type Selection - MOVED TO THE FRONT */}
-        <FormControl 
+        {/* <FormControl 
           variant="standard" 
           className="slate-dropdown"
           sx={{ 
@@ -291,7 +291,7 @@ export const EditorToolbar = ({ editor }) => {
               </MenuItem>
             ))}
           </Select>
-        </FormControl>
+        </FormControl> */}
 
         <div className="slate-separator"></div>
 

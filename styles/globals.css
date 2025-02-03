@@ -9,7 +9,7 @@
   width: 100%;
   gap: 16px;
 }
-
+/* 
 .slate-p{
   margin-bottom: 1rem; 
   text-align: left; 
@@ -24,17 +24,17 @@
 
 .slate-h3{
   padding: 12px 16px;
-  margin-bottom: 0.8rem; /* Spacing between question and answers */
-  font-family: 'Satoshi Bold', sans-serif; /* Make the question bolder */
-  font-size: 20px; /* Slightly larger than answers */
+  margin-bottom: 0.8rem;
+  font-family: 'Satoshi Bold', sans-serif;
+  font-size: 20px;
   line-height: 1.5;
-  color: #FFFFFF; /* Softer white for contrast */
+  color: #FFFFFF;
   text-align: left;
   font-weight: 700;
   display: flex;
   align-items: center;
   position: relative;
-}
+} */
 
 .slate-answers {
   display: flex;
@@ -44,12 +44,12 @@
 
 .slate-editor {
   padding: 16px;
-  /* Deep dark blue-purple */
+
   background-color: transparent; 
-  /* Light gray for text */
+
   color: #FFFFFF; 
   border-radius: 0px 0px 12px 12px;
-  /* Darker border */
+
   border-left: 1px solid #9D74FF;
   border-right: 1px solid #9D74FF; 
   border-bottom: 1px solid #9D74FF;
@@ -87,7 +87,7 @@
   position: relative;
   background: transparent;
   border: none;
-  /* Muted purple for inactive state */
+
   color: #9E7EFF; 
   transition: all 0.3s ease;
   display: inline-flex;
@@ -100,13 +100,13 @@
 }
 
 .slate-btn:hover {
-  background: #0C0B17; /* Dark purple hover state */
-  color: #9E7EFF; /* Lighter purple on hover */
+  background: #0C0B17;
+  color: #9E7EFF; 
 }
 
 .slate-btn.is-active {
-  background: #4A2C4A; /* Active state background */
-  color: #9E94A5; /* Active state text color */
+  background: #4A2C4A; 
+  color: #9E94A5; 
  
 }
 
@@ -116,7 +116,7 @@
   left: 0;
   width: 100%;
   height: 2px;
-  background-color: #B084B0; /* Light purple indicator */
+  background-color: #B084B0; 
   opacity: 0.75;
   border-radius: 0 0 8px 8px;
 }
@@ -136,12 +136,12 @@
 
 .slate-separator {
   height: 24px;
-  /* Dark border color */
+  
   background-color: #DECDFF; 
   width: 1px;
   margin: 0 8px;
 }
-
+/* 
 .slate-h1 {
   font-family: "Satoshi Bold", sans-serif;
   font-size: 20px; 
@@ -162,7 +162,7 @@
   text-align: left;
   color: #ffffff;
   white-space: pre-wrap; 
-}
+} */
 /*
 Roboto-Mono font imported here
 */

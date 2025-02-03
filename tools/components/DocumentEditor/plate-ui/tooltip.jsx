@@ -1,9 +1,8 @@
 import React from 'react';
 
+import { Button } from '@mui/material';
 import * as TooltipPrimitive from '@radix-ui/react-tooltip';
 import { withCn, withProps } from '@udecode/cn';
-
-import { Button } from '@mui/material';
 
 export const TooltipProvider = withProps(TooltipPrimitive.Provider, {
   delayDuration: 0,
