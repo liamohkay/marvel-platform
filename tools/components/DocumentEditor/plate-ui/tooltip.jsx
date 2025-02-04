@@ -17,9 +17,7 @@ export const TooltipTrigger = TooltipPrimitive.Trigger;
 export const TooltipPortal = TooltipPrimitive.Portal;
 
 export const TooltipContent = withCn(
-  withProps(TooltipPrimitive.Content, {
-    sideOffset: 4,
-  }),
+  withProps(TooltipPrimitive.Content, { sideOffset: 4 }),
   'z-50 overflow-hidden rounded-md bg-black px-3 py-1.5 text-sm font-semibold text-white shadow-md'
 );
 

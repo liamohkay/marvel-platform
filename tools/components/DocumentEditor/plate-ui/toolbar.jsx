@@ -1,4 +1,5 @@
 import * as React from 'react';
+
 import {
   FormatQuote as BlockQuoteIcon,
   FormatBold as BoldIcon,
@@ -8,10 +9,11 @@ import {
   FormatUnderlined as UnderlineIcon,
 } from '@mui/icons-material';
 import * as ToolbarPrimitive from '@radix-ui/react-toolbar';
-import { cn, withCn, withRef, withVariants } from '@udecode/cn';
+import { cn, withCn } from '@udecode/cn';
 import { cva } from 'class-variance-authority';
-import { withTooltip } from './tooltip';
+
 import ToolbarSeparator from './ToolbarSeparator';
+import { withTooltip } from './tooltip';
 
 const toolbarButtonVariants = cva(
   cn(
@@ -64,7 +66,7 @@ const ToolbarButton = withTooltip(
 );
 
 export const EditorToolbar = (props) => {
-  const { editor } = props
+  const { editor } = props;
   if (!editor) return null;
 
   const isMarkActive = (format) => {
@@ -197,7 +199,7 @@ export const EditorToolbar = (props) => {
             <UnderlineIcon className="h-5 w-5" />
           </ToolbarButton>
         </div>
-        <ToolbarSeparator />
+        {/* <ToolbarSeparator />
         <div className="slate-toolbar-group">
           <ToolbarButton
             tooltip="Bullet List"
@@ -215,7 +217,7 @@ export const EditorToolbar = (props) => {
           >
             <NumberedListIcon className="h-5 w-5" />
           </ToolbarButton>
-        </div>
+        </div> */}
          {/* <ToolbarButton
           tooltip="Block Quote"
           isActive={isBlockActive('blockquote')}
