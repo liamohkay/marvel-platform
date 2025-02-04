@@ -175,6 +175,7 @@ export const EditorToolbar = ({ editor }) => {
             tooltip="Bold"
             isActive={isMarkActive('bold')}
             onClick={() => toggleMark('bold')}
+            className={`slate-btn ${isMarkActive('bold') ? 'is-active' : ''}`}
           >
             <BoldIcon className="h-5 w-5" />
           </ToolbarButton>
@@ -182,6 +183,7 @@ export const EditorToolbar = ({ editor }) => {
             tooltip="Italic"
             isActive={isMarkActive('italic')}
             onClick={() => toggleMark('italic')}
+            className={`slate-btn ${isMarkActive('italic') ? 'is-active' : ''}`}
           >
             <ItalicIcon className="h-5 w-5" />
           </ToolbarButton>
@@ -189,6 +191,7 @@ export const EditorToolbar = ({ editor }) => {
             tooltip="Underline"
             isActive={isMarkActive('underline')}
             onClick={() => toggleMark('underline')}
+            className={`slate-btn ${isMarkActive('underline') ? 'is-active' : ''}`}
           >
             <UnderlineIcon className="h-5 w-5" />
           </ToolbarButton>
@@ -199,6 +202,7 @@ export const EditorToolbar = ({ editor }) => {
             tooltip="Bullet List"
             isActive={isBlockActive('bulletList')}
             onClick={() => toggleBlock('bulletList')}
+            className={`slate-btn ${isBlockActive('bulletList') ? 'is-active' : ''}`}
           >
             <BulletListIcon className="h-5 w-5" />
           </ToolbarButton>
@@ -206,12 +210,21 @@ export const EditorToolbar = ({ editor }) => {
             tooltip="Numbered List"
             isActive={isBlockActive('numberedList')}
             onClick={() => toggleBlock('numberedList')}
+            className={`slate-btn ${isBlockActive('numberedList') ? 'is-active' : ''}`}
           >
             <NumberedListIcon className="h-5 w-5" />
           </ToolbarButton>
         </div>
-        {/* <ToolbarSeparator />
-        <ToolbarButton
+         {/* <ToolbarButton
+          tooltip="Block Quote"
+          isActive={isBlockActive('blockquote')}
+          onClick={() => toggleBlock('blockquote')}
+          className={`slate-btn ${isBlockActive('blockquote') ? 'is-active' : ''}`}
+        >
+          <BlockQuoteIcon className="h-5 w-5" />
+        </ToolbarButton> */}
+        <ToolbarSeparator />
+        {/* <ToolbarButton
           tooltip="Block Quote"
           isActive={isBlockActive('blockquote')}
           onClick={() => toggleBlock('blockquote')}
