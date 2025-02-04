@@ -12,8 +12,14 @@ import * as ToolbarPrimitive from '@radix-ui/react-toolbar';
 import { cn, withCn } from '@udecode/cn';
 import { cva } from 'class-variance-authority';
 
+import { useDispatch } from 'react-redux';
+
 import ToolbarSeparator from './ToolbarSeparator';
 import { withTooltip } from './tooltip';
+
+import { actions as toolActions } from '@/tools/data';
+
+const { undo, redo } = toolActions;
 
 const toolbarButtonVariants = cva(
   cn(
@@ -68,6 +74,11 @@ const ToolbarButton = withTooltip(
 export const EditorToolbar = (props) => {
   const { editor } = props;
   if (!editor) return null;
+
+
+  const dispatch = useDispatch();
+  const handleUndo = () => dispatch(undo());
+  const handleRedo = () => dispatch(redo());
 
   const isMarkActive = (format) => {
     const { selection } = editor;
@@ -199,9 +210,11 @@ export const EditorToolbar = (props) => {
             <UnderlineIcon className="h-5 w-5" />
           </ToolbarButton>
         </div>
-        {/* <ToolbarSeparator />
+        <ToolbarSeparator />
         <div className="slate-toolbar-group">
-          <ToolbarButton
+          <button onClick={handleUndo}>Undo</button>
+          <button onClick={handleRedo}>Redo</button>
+          {/* <ToolbarButton
             tooltip="Bullet List"
             isActive={isBlockActive('bulletList')}
             onClick={() => toggleBlock('bulletList')}
@@ -216,8 +229,8 @@ export const EditorToolbar = (props) => {
             className={`slate-btn ${isBlockActive('numberedList') ? 'is-active' : ''}`}
           >
             <NumberedListIcon className="h-5 w-5" />
-          </ToolbarButton>
-        </div> */}
+          </ToolbarButton> */}
+        </div>
          {/* <ToolbarButton
           tooltip="Block Quote"
           isActive={isBlockActive('blockquote')}
