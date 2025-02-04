@@ -1,16 +1,8 @@
-import {
-  Fade,
-  Grid,
-  Paper,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
-} from '@mui/material';
+import { Fade, Grid } from '@mui/material';
 
 import { useSelector } from 'react-redux';
+
+import DocumentEditor from '../../components/DocumentEditor/DocumentEditor';
 
 import styles from './styles';
 
@@ -30,6 +22,7 @@ import styles from './styles';
  * - Learning Outcomes: The learning outcomes of the course.
  */
 const SyllabusGeneratorResponse = () => {
+<<<<<<< HEAD
   const { response } = useSelector((state) => state.tools);
 
   const renderTable = () => {
@@ -89,10 +82,15 @@ const SyllabusGeneratorResponse = () => {
       </TableContainer>
     );
   };
+=======
+  const { content: markdownContent } = useSelector((state) => state.tools.editorState.currentState);
+>>>>>>> a3b4a1f (Feature/2.2 task3 redo (#13))
 
   return (
     <Fade in>
-      <Grid {...styles.mainGridProps}>{renderTable()}</Grid>
+      <Grid {...styles.mainGridProps}>
+        <DocumentEditor markdownContent={markdownContent} />
+      </Grid>
     </Fade>
   );
 };
