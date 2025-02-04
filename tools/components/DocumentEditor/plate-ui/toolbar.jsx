@@ -63,7 +63,8 @@ const ToolbarButton = withTooltip(
   )
 );
 
-export const EditorToolbar = ({ editor }) => {
+export const EditorToolbar = (props) => {
+  const { editor } = props
   if (!editor) return null;
 
   const isMarkActive = (format) => {
