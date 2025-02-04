@@ -14,6 +14,7 @@ import { cva } from 'class-variance-authority';
 
 import { useDispatch } from 'react-redux';
 
+import ToolbarExportAdapter from './ToolbarExportAdapter';
 import ToolbarSeparator from './ToolbarSeparator';
 import { withTooltip } from './tooltip';
 
@@ -120,6 +121,7 @@ export const EditorToolbar = (props) => {
 
   return (
     <Toolbar className="slate-toolbar">
+      <ToolbarExportAdapter />
       {/* <ToolbarSeparator /> */}
       {/* Paragraph/Block Type Selection - MOVED TO THE FRONT */}
       {/* <FormControl 
