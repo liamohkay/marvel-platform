@@ -28,11 +28,13 @@ import evaluateCondition from '@/tools/libs/utils/evaluateCondition';
 import { convertResponseToMarkdown } from '@/tools/libs/utils/markdownConverter';
 import { usePlateEditor } from '@udecode/plate/react';
 import { MarkdownPlugin } from '@udecode/plate-markdown';
+import { syncHistoryEntry } from '@/tools/data/thunks/editHistory';
 
 const {
   setCommunicatorLoading,
   setFormOpen,
   setResponse,
+  setSessionId,
   addStateToEditHistory,
 } = toolActions;
 
@@ -135,7 +137,7 @@ const ToolRequestForm = (props) => {
         toolData: { toolId: id, inputs: finalData },
       });
 
-      const response = await submitPrompt(
+      const { response, sessionId } = await submitPrompt(
         {
           tool_data: { tool_id: id, inputs: finalData },
           type: 'tool',
@@ -156,13 +158,14 @@ const ToolRequestForm = (props) => {
       const markdownToSave = markdownEditor.api.markdown.serialize();
 
       dispatch(setResponse(response));
-      dispatch(
-        addStateToEditHistory({
-          content: markdownToSave,
-          timestamp: Date.now(),
-          type: EDIT_HISTORY_TYPES.INITIAL,
-        })
-      );
+      dispatch(setSessionId(sessionId));
+      const historyEntry = {
+        content: markdownToSave,
+        timestamp: Date.now(),
+        type: EDIT_HISTORY_TYPES.INITIAL,
+      };
+      dispatch(addStateToEditHistory(historyEntry));
+      dispatch(syncHistoryEntry(historyEntry));
       dispatch(setFormOpen(false));
       dispatch(setCommunicatorLoading(false));
       dispatch(fetchToolHistory({ firestore }));

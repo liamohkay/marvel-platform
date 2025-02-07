@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 
 import { actions as toolActions } from '@/tools/data';
+import { syncHistoryEntry } from '@/tools/data/thunks/editHistory';
 
 import { withProps } from '@udecode/cn';
 import {
@@ -151,13 +152,7 @@ export function PlateEditor(props) {
    * @param {string} editorContent - The current content of the Plate.js editor.
    */
   const handleAutosave = debounce((editorContent) => {
-    // Serialize Plate.js editor content to markdown for state save
     const editorMarkdown = editor.api.markdown.serialize(editorContent);
-    const { editHistory } = editorState;
-
-    // Don't autosave if the last saved content is the same as the new changes
-    if (editorMarkdown === editHistory[editHistory.length - 1]?.content) return;
-
     const newHistoryEntry = {
       timestamp: Date.now(),
       content: editorMarkdown,
@@ -165,7 +160,7 @@ export function PlateEditor(props) {
     };
 
     dispatch(addStateToEditHistory(newHistoryEntry)); // Save to state
-    // axios.post(FIREBASE_FUNCTION_URL, newHistoryEntry); // Save to Firestore
+    dispatch(syncHistoryEntry(newHistoryEntry)); // Save to Firestore
   }, 2000);
 
   return (
