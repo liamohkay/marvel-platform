@@ -1,3 +1,5 @@
+require('dotenv').config(); // Load environment variables from .env file
+
 const admin = require('firebase-admin');
 const { onCall, HttpsError } = require('firebase-functions/v2/https');
 const { default: axios } = require('axios');
@@ -26,6 +28,7 @@ const DEBUG = true;
  *
  * @return {object} The response from the AI service.
  */
+
 const marvelCommunicator = async (payload) => {
   try {
     DEBUG && logger.log('marvelCommunicator started, data:', payload.data);
@@ -34,6 +37,11 @@ const marvelCommunicator = async (payload) => {
     const isToolCommunicator = type === BOT_TYPE.TOOL;
     const MARVEL_API_KEY = process.env.MARVEL_API_KEY;
     const MARVEL_ENDPOINT = process.env.MARVEL_ENDPOINT;
+
+    // Validate environment variables
+    if (!MARVEL_ENDPOINT || !MARVEL_API_KEY) {
+      throw new Error('Marvel AI backend configuration is missing');
+    }
 
     DEBUG &&
       logger.log(
@@ -68,14 +76,18 @@ const marvelCommunicator = async (payload) => {
 
     return { status: 'success', data: resp.data };
   } catch (error) {
-    const {
-      response: { data },
-    } = error;
-    const { message } = data;
-    DEBUG && logger.error('marvelCommunicator error:', data);
-    throw new HttpsError('internal', message);
+    DEBUG && logger.error('marvelCommunicator error:', error);
+
+    // Improved error handling
+    const errorMessage =
+      error.response?.data?.message ||
+      error.message ||
+      'Failed to communicate with Marvel AI backend';
+
+    throw new HttpsError('internal', errorMessage);
   }
 };
+
 
 /**
  * Manages communications for a specific chat session with a chatbot, updating and retrieving messages.

@@ -161,11 +161,12 @@ const styles = {
       px: '3px',
       pb: '3px',
       mt: 0.5,
-      height: '100%',
+      height: 'calc(100vh - 200px)',
       justifyContent: 'flex-start',
       alignContent: 'flex-start',
       sx: {
         overflowY: 'auto',
+        scrollBehavior: 'smooth',
       },
     },
     imageProps: {
@@ -397,6 +398,7 @@ const styles = {
       borderRadius: '50%',
     },
   },
+  
 };
 
 export default styles;

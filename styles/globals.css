@@ -1,3 +1,9 @@
+/* Tailwind Base, Components, and Utilities */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
 /*
 Roboto-Mono font imported here
 */
