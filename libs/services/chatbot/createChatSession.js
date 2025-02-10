@@ -1,5 +1,4 @@
 import { httpsCallable } from 'firebase/functions';
-
 import {
   setError,
   setStreaming,
@@ -16,18 +15,21 @@ import { functions } from '@/libs/redux/store';
  */
 const createChatSession = async (payload, dispatch) => {
   try {
+    console.log('Payload:', payload); // Log the payload for debugging
     const createSession = httpsCallable(functions, 'createChatSession');
     const response = await createSession(payload);
 
     return response.data;
   } catch (err) {
-    dispatch(setError('Error! Couldn\u0027t send message'));
+    console.error('Firebase Error:', err); // Log the full error
+    const errorMessage = err.message || 'Error! Couldn\u0027t send message';
+    dispatch(setError(errorMessage));
     dispatch(setStreaming(false));
     dispatch(setTyping(false));
     setTimeout(() => {
       dispatch(setError(null));
     }, 3000);
-    throw new Error('Error could not send message');
+    throw new Error(errorMessage); // Use the actual error message
   }
 };
 

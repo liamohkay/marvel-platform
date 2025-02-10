@@ -58,6 +58,7 @@ import sendMessage from '@/libs/services/chatbot/sendMessage';
 
 const ChatInterface = () => {
   const messagesContainerRef = useRef();
+  const messagesEndRef = useRef(null);
 
   const dispatch = useDispatch();
   const {
@@ -127,83 +128,86 @@ const ChatInterface = () => {
       dispatch(resetChat());
     };
   }, []);
+  // BULLET 2: Ensure smooth auto-scrolling
+  useEffect(() => {
+    if (messagesEndRef.current && fullyScrolled) {
+      messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
+    }
+  }, [chatMessages, fullyScrolled]); //  Now checks `fullyScrolled` before scrolling
+ 
 
   useEffect(() => {
+    if (!sessionLoaded || !currentSession) return;
+ 
     let unsubscribe;
-
-    if (sessionLoaded || currentSession) {
-      messagesContainerRef.current?.scrollTo(
-        0,
-        messagesContainerRef.current?.scrollHeight,
-        {
-          behavior: 'smooth',
-        }
-      );
-
-      const sessionRef = query(
-        collection(firestore, 'chatSessions'),
-        where('id', '==', sessionId)
-      );
-
-      unsubscribe = onSnapshot(sessionRef, async (snapshot) => {
-        snapshot.docChanges().forEach((change) => {
-          if (change.type === 'modified') {
-            const updatedData = change.doc.data();
-            const updatedMessages = updatedData.messages;
-
-            const lastMessage = updatedMessages[updatedMessages.length - 1];
-            // Convert Firestore timestamp to JavaScript Date object.
-            lastMessage.timestamp = lastMessage.timestamp.toDate();
-
-            // Update the history entry with the latest timestamp.
-            dispatch(
-              updateHistoryEntry({
-                id: sessionId,
-                updatedAt: updatedData.updatedAt.toDate().toISOString(),
-              })
-            );
-
-            if (lastMessage?.role === MESSAGE_ROLE.AI) {
-              dispatch(
-                setMessages({
-                  role: MESSAGE_ROLE.AI,
-                  response: lastMessage,
-                })
-              );
-              dispatch(setTyping(false));
-            }
-          }
-        });
-      });
-    }
-
-    return () => {
-      if (sessionLoaded || currentSession) unsubscribe();
-    };
-  }, [sessionLoaded]);
-
-  const handleOnScroll = () => {
-    const scrolled =
-      Math.abs(
-        messagesContainerRef.current.scrollHeight -
-          messagesContainerRef.current.clientHeight -
-          messagesContainerRef.current.scrollTop
-      ) <= 1;
-
-    if (fullyScrolled !== scrolled) dispatch(setFullyScrolled(scrolled));
-  };
-
-  const handleScrollToBottom = () => {
-    messagesContainerRef.current?.scrollTo(
-      0,
-      messagesContainerRef.current?.scrollHeight,
-      {
-        behavior: 'smooth',
-      }
+ 
+    const sessionRef = query(
+      collection(firestore, "chatSessions"),
+      where("id", "==", sessionId)
     );
-
-    dispatch(setStreamingDone(false));
+ 
+    unsubscribe = onSnapshot(sessionRef, async (snapshot) => {
+      snapshot.docChanges().forEach((change) => {
+        if (change.type === "modified") {
+          const updatedData = change.doc.data();
+          const updatedMessages = updatedData.messages;
+ 
+          const lastMessage = updatedMessages[updatedMessages.length - 1];
+          lastMessage.timestamp = lastMessage.timestamp.toDate(); // Convert Firestore timestamp
+ 
+          dispatch(updateHistoryEntry({
+            id: sessionId,
+            updatedAt: updatedData.updatedAt.toDate().toISOString(),
+          }));
+ 
+          if (lastMessage?.role === MESSAGE_ROLE.AI) {
+            dispatch(setMessages({ role: MESSAGE_ROLE.AI, response: lastMessage }));
+            dispatch(setTyping(false));
+ 
+            console.log(" AI message received - setting `streamingDone` to true");
+            dispatch(setStreamingDone(true));
+ 
+            // Force `fullyScrolled` to false since a new AI message has arrived
+            dispatch(setFullyScrolled(false));
+          }
+        }
+      });
+    });
+ 
+    return () => {
+      if (unsubscribe) unsubscribe();
+    };
+  }, [sessionLoaded, currentSession]);
+ 
+  //Task 3: Prevent forced scrolling when the user manually scrolls up
+  const handleOnScroll = () => {
+    if (!messagesContainerRef.current) return;
+  
+    const { scrollTop, scrollHeight, clientHeight } = messagesContainerRef.current;
+    const isAtBottom = scrollHeight - scrollTop - clientHeight < 50;
+  
+    console.log(" User Scrolled - At Bottom?", isAtBottom);
+  
+    if (fullyScrolled !== isAtBottom) {
+      dispatch(setFullyScrolled(isAtBottom));
+    }
+  
+    // Show "New Response" indicator when user scrolls up
+    if (!isAtBottom) {
+      dispatch(setStreamingDone(true));
+    }
   };
+ 
+ 
+  const handleScrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    
+    // Reset both streaming done and fully scrolled states
+    dispatch(setStreamingDone(false));
+    dispatch(setFullyScrolled(true));
+  };
+ 
+ 
 
   const handleSendMessage = async () => {
     if (!input) {
@@ -358,22 +362,37 @@ const ChatInterface = () => {
               )
           )}
           {typing && <ChatSpinner />}
+          <div ref={messagesEndRef} />
         </Grid>
       </Grid>
     );
   };
 
-  const renderNewMessageIndicator = () => {
-    return (
-      <Fade in={showNewMessageIndicator}>
-        <Button
-          startIcon={<ArrowDownwardOutlined />}
-          onClick={handleScrollToBottom}
-          {...styles.newMessageButtonProps}
-        />
-      </Fade>
-    );
-  };
+//“New Response” indicator
+const renderNewMessageIndicator = () => {
+  const showIndicator = (!fullyScrolled && streamingDone) || !fullyScrolled;
+  
+  return (
+    <Fade in={showIndicator}>
+      <button
+        onClick={handleScrollToBottom}
+        className={`
+          ${showIndicator ? 'flex' : 'hidden'}
+          fixed bottom-[150px] left-[40%] -translate-x-1/2 z-50
+          items-center justify-center gap-2
+          bg-[rgb(88,20,244)] hover:bg-[rgb(88,20,244)]
+          text-white text-sm font-medium
+          w-[120px] h-8 px-3
+          rounded-full shadow-lg
+          transition-all duration-200 ease-in-out
+        `}
+      >
+        <ArrowDownwardOutlined className="w-4 h-4 text-white" />
+        <span className='text-white'>New Response</span>
+      </button>
+    </Fade>
+  );
+};
 
   /**
    * Render the Quick Action component as an InputAdornment.
@@ -403,7 +422,9 @@ const ChatInterface = () => {
   const renderBottomChatContent = () => {
     if (!openSettingsChat && !infoChatOpened)
       return (
-        <Grid {...styles.bottomChatContent.bottomChatContentGridProps}>
+        <Grid {...styles.bottomChatContent.bottomChatContentGridProps}
+        
+        >
           {/* Default Prompt Component */}
           <DefaultPrompt handleSendMessage={handleSendMessage} />
           {/* Quick Actions Component */}
