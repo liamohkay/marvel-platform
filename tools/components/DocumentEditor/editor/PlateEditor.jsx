@@ -23,7 +23,11 @@ import {
 } from '@udecode/plate-basic-marks/react';
 import { BlockquotePlugin } from '@udecode/plate-block-quote/react';
 import { ListPlugin } from '@udecode/plate-list/react';
+import { CodeBlockPlugin, CodeLinePlugin, CodeSyntaxPlugin } from '@udecode/plate-code-block/react';
+import { CodeBlockElement } from '../plate-ui/code-block-element';
 import { ListElement } from '../plate-ui/list-element';
+import { CodeLineElement } from '../plate-ui/code-line-element';
+import { CodeSyntaxLeaf } from '../plate-ui/code-syntax-leaf';
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { HEADING_KEYS } from '@udecode/plate-heading';
 import { HeadingPlugin } from '@udecode/plate-heading/react';
@@ -33,12 +37,11 @@ import { IndentListPlugin } from '@udecode/plate-indent-list/react';
 import { MarkdownPlugin } from '@udecode/plate-markdown';
 
 import { Editor, EditorContainer } from '../plate-ui/editor';
-
+import { EditorToolbar } from '../plate-ui/toolbar';
 import { EDIT_HISTORY_TYPES } from '@/tools/libs/constants/editor';
+import styles from './PlateEditor.module.css';
 
 const { addStateToEditHistory } = toolActions;
-
-import { EditorToolbar } from '../plate-ui/toolbar';
 
 /**
  * Creates a debounced function that delays invoking the callback
@@ -83,8 +86,33 @@ export function PlateEditor(props) {
     ItalicPlugin,
     UnderlinePlugin,
     CodePlugin,
+    CodeBlockPlugin.configure({}),
+    CodeLinePlugin.configure({}),
+    CodeSyntaxPlugin.configure({
+      syntax: {
+        languages: {
+          js: 'javascript',
+        },
+        defaultLanguage: 'javascript',
+      },
+    }),
     StrikethroughPlugin,
-    MarkdownPlugin,
+    MarkdownPlugin.configure({
+      deserialize: {
+        element: {
+          code_block: {
+            getNode: ({ children, attributes }) => ({
+              type: 'code_block',
+              lang: attributes.language || 'javascript',
+              children,
+            }),
+          },
+        },
+      },
+      options: {
+        indentList: true,
+      }
+    }),
     HeadingPlugin,
     IndentPlugin.configure({
       inject: {
@@ -126,6 +154,20 @@ export function PlateEditor(props) {
         tr: withProps(PlateElement, { as: 'tr', className: 'border-b border-gray-200' }),
         th: withProps(PlateElement, { as: 'th', className: 'px-4 py-2 text-left bg-gray-100' }),
         td: withProps(PlateElement, { as: 'td', className: 'px-4 py-2' }),
+        code: withProps(PlateLeaf, { as: 'code' }),
+        // code_block: withProps(PlateElement, {
+        //   as: 'pre',
+        //   className: 'bg-muted p-4 rounded-md font-mono text-sm overflow-x-auto'
+        // }),
+        // code_block: withProps(CodeBlockElement, {
+        //   className: 'bg-muted p-4 rounded-md font-mono text-sm overflow-x-auto'
+        // }),
+        // code_line: withProps(CodeLineElement, {
+        //   className: 'block'
+        // }),
+        code_block: CodeBlockElement,
+        code_line: CodeLineElement,
+        code_syntax: CodeSyntaxLeaf,
       },
     },
     plugins,
@@ -173,9 +215,14 @@ export function PlateEditor(props) {
           placeholder="Start typing here..."
           autoFocus={false}
           spellCheck
-          className="text-foreground"
+          className={`text-foreground ${styles['slate-editor']}`}
         />
       </EditorContainer>
+      {/* {debugValue && (
+        <pre style={{ backgroundColor: 'black', padding: '10px', marginTop: '20px' }}>
+          {JSON.stringify(debugValue, null, 2)}
+        </pre>
+      )} */}
     </Plate>
   );
 }
