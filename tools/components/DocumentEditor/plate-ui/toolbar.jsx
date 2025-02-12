@@ -4,30 +4,35 @@ import * as ToolbarPrimitive from '@radix-ui/react-toolbar';
 import { cn, withCn, withRef, withVariants } from '@udecode/cn';
 import { cva } from 'class-variance-authority';
 
-import { 
-  FormatBold as BoldIcon, 
-  FormatItalic as ItalicIcon, 
-  FormatUnderlined as UnderlineIcon, 
-  LooksOne as H1Icon, 
-  LooksTwo as H2Icon, 
-  Looks3 as H3Icon, 
+import {
+  FormatBold as BoldIcon,
+  FormatItalic as ItalicIcon,
+  FormatUnderlined as UnderlineIcon,
+  LooksOne as H1Icon,
+  LooksTwo as H2Icon,
+  Looks3 as H3Icon,
   LooksFour as H4Icon,
   LooksFive as H5Icon,
   LooksSix as H6Icon,
-  FormatListBulleted as BulletListIcon, 
-  FormatListNumbered as NumberedListIcon, 
-  FormatQuote as BlockQuoteIcon 
+  FormatListBulleted as BulletListIcon,
+  FormatListNumbered as NumberedListIcon,
+  FormatQuote as BlockQuoteIcon
 } from '@mui/icons-material';
 
-import { 
+import {
   FormatSize as HeadingIcon,
-  ArrowDropDown as DropdownIcon 
+  ArrowDropDown as DropdownIcon
 } from '@mui/icons-material';
-import { 
-  Select, 
-  MenuItem, 
-  FormControl 
+import {
+  Select,
+  MenuItem,
+  FormControl
 } from '@mui/material';
+// import UndoIcon from '../../../assets/svg/undoIcon.svg';
+// import RedoIcon from '../../../assets/svg/redoIcon.svg';
+import { Undo as UndoIcon, Redo as RedoIcon } from '@mui/icons-material';
+import { useDispatch } from 'react-redux';
+import { actions as toolActions } from "@/tools/data";
 
 import { Separator } from './separator';
 import { withTooltip } from './tooltip';
@@ -88,14 +93,14 @@ export const Toolbar = withCn(
 // Toolbar Button Component with Tooltip
 const ToolbarButton = withTooltip(
   React.forwardRef((props, ref) => {
-    const { 
-      children, 
-      className, 
-      tooltip, 
-      isActive, 
-      size = 'sm', 
-      onClick, 
-      ...restProps 
+    const {
+      children,
+      className,
+      tooltip,
+      isActive,
+      size = 'sm',
+      onClick,
+      ...restProps
     } = props;
 
     return (
@@ -119,12 +124,15 @@ const ToolbarButton = withTooltip(
 
 // Toolbar for Plate.js Editor
 export const EditorToolbar = ({ editor }) => {
+  const dispatch = useDispatch();
+  const { undo, redo } = toolActions;
+
   const [headingLevel, setHeadingLevel] = React.useState('');
 
   // Check if a mark is active
   const isMarkActive = (format) => {
     if (!editor) return false;
-    
+
     // Manually check for active marks using Plate.js editor methods
     const { selection } = editor;
     if (!selection) return false;
@@ -140,7 +148,7 @@ export const EditorToolbar = ({ editor }) => {
   // Check if a block is active
   const isBlockActive = (type) => {
     if (!editor) return false;
-    
+
     const { selection } = editor;
     if (!selection) return false;
 
@@ -159,10 +167,10 @@ export const EditorToolbar = ({ editor }) => {
   // Toggle mark (bold, italic, underline)
   const toggleMark = (format) => {
     if (!editor) return;
-    
+
     // Check if the mark is currently active
     const isActive = isMarkActive(format);
-    
+
     // If active, remove the mark; if not active, add the mark
     if (isActive) {
       editor.removeMark(format);
@@ -177,7 +185,7 @@ export const EditorToolbar = ({ editor }) => {
       console.warn('Toolbar: Editor not ready');
       return;
     }
-    
+
     // Existing logic with added safety checks
     try {
       switch (type) {
@@ -196,9 +204,9 @@ export const EditorToolbar = ({ editor }) => {
             setHeadingLevel('');
             return;
           }
-          
+
           const isCurrentType = isBlockActive(type);
-          
+
           if (isCurrentType) {
             editor.setNodes({ type: 'paragraph' });
             setHeadingLevel('');
@@ -212,6 +220,14 @@ export const EditorToolbar = ({ editor }) => {
     }
   };
 
+  const handleUndo = () => {
+    dispatch(undo());
+  };
+
+  const handleRedo = () => {
+    dispatch(redo());
+  };
+
   const headingOptions = [
     { value: 'paragraph', label: 'Paragraph' },
     { value: 'h1', label: 'Heading 1' },
@@ -222,15 +238,39 @@ export const EditorToolbar = ({ editor }) => {
     { value: 'h6', label: 'Heading 6' }
   ];
 
+
   return (
     <Toolbar className="slate-toolbar">
       <div className="slate-btn-container">
+
+        {/* Undo and Redo buttons */}
+
+        <ToolbarButton
+          tooltip="Undo"
+          onClick={handleUndo}
+          className="slate-btn"
+        >
+          <UndoIcon fontSize="small" />
+        </ToolbarButton>
+        <ToolbarButton
+          tooltip="Redo"
+          onClick={handleRedo}
+          className="slate-btn"
+
+        >
+          <RedoIcon fontSize="small" />
+        </ToolbarButton>
+
+        <div className="slate-separator"></div>
+
+
+
         {/* Paragraph/Block Type Selection - MOVED TO THE FRONT */}
-        <FormControl 
-          variant="standard" 
+        <FormControl
+          variant="standard"
           className="slate-dropdown"
-          sx={{ 
-            minWidth: 120, 
+          sx={{
+            minWidth: 120,
             '& .MuiSelect-select': {
               display: 'flex',
               alignItems: 'center',
@@ -269,8 +309,8 @@ export const EditorToolbar = ({ editor }) => {
             }}
           >
             {headingOptions.map((option) => (
-              <MenuItem 
-                key={option.value} 
+              <MenuItem
+                key={option.value}
                 value={option.value}
                 sx={{
                   '&:hover': {
@@ -287,10 +327,14 @@ export const EditorToolbar = ({ editor }) => {
           </Select>
         </FormControl>
 
+
+
+
         <div className="slate-separator"></div>
 
         {/* Text Formatting Group */}
         <div className="slate-toolbar-group">
+
           <ToolbarButton
             tooltip="Bold"
             isActive={isMarkActive('bold')}

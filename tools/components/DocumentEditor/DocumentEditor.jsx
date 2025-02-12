@@ -1,16 +1,16 @@
-'use client';
+// 'use client';
 
 import React, { useState } from 'react';
-import React, { useState } from 'react';
+// import React, { useState } from 'react';
 
 import { PlateEditor } from './editor/plate-editor';
 import { EditorToolbar } from './plate-ui/toolbar';
-import { EditorToolbar } from './plate-ui/toolbar';
+// import { EditorToolbar } from './plate-ui/toolbar';
 
 const DocumentEditor = ({ markdownContent }) => {
   const [editor, setEditor] = useState(null);
 
-  const [editor, setEditor] = useState(null);
+  // const [editor, setEditor] = useState(null);
 
   return (
     <div className="document-editor h-full w-full bg-gray-900 text-white p-6 rounded-lg shadow-lg">
