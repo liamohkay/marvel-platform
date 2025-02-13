@@ -12,8 +12,11 @@ const convertQuizToMarkdown = (response) => {
     .map((question, index) => {
       const escapedQuestion = escapeMarkdown(question.question);
       const questionText = `# ${index + 1}. ${escapedQuestion}\n`;
+<<<<<<< HEAD
 
       // Render each choice as a separate paragraph
+=======
+>>>>>>> fa767e4a51ab3399ccc55366af9a460764c54e35
       const choices = question.choices
         .map(
           (choice) =>

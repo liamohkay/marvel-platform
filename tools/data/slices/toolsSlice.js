@@ -11,6 +11,10 @@ const toolsState = {
 const communicator = {
   prompt: null,
   response: null,
+<<<<<<< HEAD
+=======
+  sessionId: null,
+>>>>>>> fa767e4a51ab3399ccc55366af9a460764c54e35
   editorState: {
     /*
       {
@@ -55,6 +59,12 @@ const tools = createSlice({
     setResponse: (state, action) => {
       state.response = action.payload;
     },
+<<<<<<< HEAD
+=======
+    setSessionId: (state, action) => {
+      state.sessionId = action.payload;
+    },
+>>>>>>> fa767e4a51ab3399ccc55366af9a460764c54e35
     addStateToEditHistory: (state, action) => {
       if (!state.editorState.currentState.content) {
         state.editorState.currentState = action.payload;
