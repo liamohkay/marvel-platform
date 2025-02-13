@@ -7,7 +7,10 @@ import {
   FormatItalic as ItalicIcon,
   FormatListNumbered as NumberedListIcon,
   FormatUnderlined as UnderlineIcon,
+  Undo as UndoIcon, 
+  Redo as RedoIcon
 } from '@mui/icons-material';
+
 import * as ToolbarPrimitive from '@radix-ui/react-toolbar';
 import { cn, withCn } from '@udecode/cn';
 import { cva } from 'class-variance-authority';
@@ -118,8 +121,28 @@ export const EditorToolbar = (props) => {
     }
   };
 
+  
   return (
     <Toolbar className="slate-toolbar">
+
+      {/* Undo and Redo buttons */}
+      <ToolbarButton
+          tooltip="Undo"
+          onClick={handleUndo}
+          className="slate-btn"
+        >
+          <UndoIcon fontSize="small" />
+        </ToolbarButton>
+        <ToolbarButton
+          tooltip="Redo"
+          onClick={handleRedo}
+          className="slate-btn"
+
+        >
+          <RedoIcon fontSize="small" />
+        </ToolbarButton>
+         
+        <ToolbarSeparator />
       {/* <ToolbarSeparator /> */}
       {/* Paragraph/Block Type Selection - MOVED TO THE FRONT */}
       {/* <FormControl 
@@ -183,7 +206,7 @@ export const EditorToolbar = (props) => {
         </Select>
       </FormControl> */}
       <div className="slate-btn-container">
-        <ToolbarSeparator />
+          
         <div className="slate-toolbar-group">
           <ToolbarButton
             tooltip="Bold"
@@ -212,9 +235,7 @@ export const EditorToolbar = (props) => {
         </div>
         <ToolbarSeparator />
         <div className="slate-toolbar-group">
-          <button onClick={handleUndo}>Undo</button>
-          <button onClick={handleRedo}>Redo</button>
-          {/* <ToolbarButton
+          <ToolbarButton
             tooltip="Bullet List"
             isActive={isBlockActive('bulletList')}
             onClick={() => toggleBlock('bulletList')}
@@ -229,7 +250,7 @@ export const EditorToolbar = (props) => {
             className={`slate-btn ${isBlockActive('numberedList') ? 'is-active' : ''}`}
           >
             <NumberedListIcon className="h-5 w-5" />
-          </ToolbarButton> */}
+          </ToolbarButton>
         </div>
          {/* <ToolbarButton
           tooltip="Block Quote"
