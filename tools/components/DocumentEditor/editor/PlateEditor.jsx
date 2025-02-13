@@ -1,10 +1,5 @@
 import React, { useEffect, useState } from 'react';
 
-import { useSelector, useDispatch } from 'react-redux';
-
-import { actions as toolActions } from '@/tools/data';
-import { syncHistoryEntry } from '@/tools/data/thunks/editHistory';
-
 import { withProps } from '@udecode/cn';
 import {
   createPlateEditor,
@@ -22,24 +17,33 @@ import {
   UnderlinePlugin,
 } from '@udecode/plate-basic-marks/react';
 import { BlockquotePlugin } from '@udecode/plate-block-quote/react';
-import { ListPlugin } from '@udecode/plate-list/react';
-import { CodeBlockPlugin, CodeLinePlugin, CodeSyntaxPlugin } from '@udecode/plate-code-block/react';
-import { CodeBlockElement } from '../plate-ui/code-block-element';
-import { ListElement } from '../plate-ui/list-element';
-import { CodeLineElement } from '../plate-ui/code-line-element';
-import { CodeSyntaxLeaf } from '../plate-ui/code-syntax-leaf';
-// eslint-disable-next-line import/no-extraneous-dependencies
+import {
+  CodeBlockPlugin,
+  CodeLinePlugin,
+  CodeSyntaxPlugin,
+} from '@udecode/plate-code-block/react';
 import { HEADING_KEYS } from '@udecode/plate-heading';
 import { HeadingPlugin } from '@udecode/plate-heading/react';
 import { IndentPlugin } from '@udecode/plate-indent/react';
 import { IndentListPlugin } from '@udecode/plate-indent-list/react';
-// eslint-disable-next-line import/no-extraneous-dependencies
+import { ListPlugin } from '@udecode/plate-list/react';
 import { MarkdownPlugin } from '@udecode/plate-markdown';
+import Prism from 'prismjs';
+import { useDispatch, useSelector } from 'react-redux';
 
+import { CodeBlockElement } from '../plate-ui/code-block-element';
+import { CodeLineElement } from '../plate-ui/code-line-element';
+import { CodeSyntaxLeaf } from '../plate-ui/code-syntax-leaf';
 import { Editor, EditorContainer } from '../plate-ui/editor';
+import { ListElement } from '../plate-ui/list-element';
 import { EditorToolbar } from '../plate-ui/toolbar';
-import { EDIT_HISTORY_TYPES } from '@/tools/libs/constants/editor';
+
 import styles from './PlateEditor.module.css';
+import 'prismjs/themes/prism.css';
+
+import { actions as toolActions } from '@/tools/data';
+import { syncHistoryEntry } from '@/tools/data/thunks/editHistory';
+import { EDIT_HISTORY_TYPES } from '@/tools/libs/constants/editor';
 
 const { addStateToEditHistory } = toolActions;
 
@@ -86,7 +90,7 @@ export function PlateEditor(props) {
     ItalicPlugin,
     UnderlinePlugin,
     CodePlugin,
-    CodeBlockPlugin.configure({}),
+    CodeBlockPlugin.configure({ options: { prism: Prism } }),
     CodeLinePlugin.configure({}),
     CodeSyntaxPlugin.configure({
       syntax: {
@@ -97,22 +101,7 @@ export function PlateEditor(props) {
       },
     }),
     StrikethroughPlugin,
-    MarkdownPlugin.configure({
-      deserialize: {
-        element: {
-          code_block: {
-            getNode: ({ children, attributes }) => ({
-              type: 'code_block',
-              lang: attributes.language || 'javascript',
-              children,
-            }),
-          },
-        },
-      },
-      options: {
-        indentList: true,
-      }
-    }),
+    MarkdownPlugin.configure({ options: { indentList: true } }),
     HeadingPlugin,
     IndentPlugin.configure({
       inject: {
@@ -154,20 +143,10 @@ export function PlateEditor(props) {
         tr: withProps(PlateElement, { as: 'tr', className: 'border-b border-gray-200' }),
         th: withProps(PlateElement, { as: 'th', className: 'px-4 py-2 text-left bg-gray-100' }),
         td: withProps(PlateElement, { as: 'td', className: 'px-4 py-2' }),
-        code: withProps(PlateLeaf, { as: 'code' }),
-        // code_block: withProps(PlateElement, {
-        //   as: 'pre',
-        //   className: 'bg-muted p-4 rounded-md font-mono text-sm overflow-x-auto'
-        // }),
-        // code_block: withProps(CodeBlockElement, {
-        //   className: 'bg-muted p-4 rounded-md font-mono text-sm overflow-x-auto'
-        // }),
-        // code_line: withProps(CodeLineElement, {
-        //   className: 'block'
-        // }),
-        code_block: CodeBlockElement,
-        code_line: CodeLineElement,
-        code_syntax: CodeSyntaxLeaf,
+        [CodePlugin.key]: withProps(PlateLeaf, { as: 'code' }),
+        [CodeBlockPlugin.key]: CodeBlockElement,
+        [CodeLinePlugin.key]: CodeLineElement,
+        [CodeSyntaxPlugin.key]: CodeSyntaxLeaf,
       },
     },
     plugins,
@@ -218,11 +197,6 @@ export function PlateEditor(props) {
           className={`text-foreground ${styles['slate-editor']}`}
         />
       </EditorContainer>
-      {/* {debugValue && (
-        <pre style={{ backgroundColor: 'black', padding: '10px', marginTop: '20px' }}>
-          {JSON.stringify(debugValue, null, 2)}
-        </pre>
-      )} */}
     </Plate>
   );
 }

@@ -1,13 +1,16 @@
 'use client';
 
 import React, { useState } from 'react';
+
+import { KeyboardArrowDown } from '@mui/icons-material';
+import { Button, Menu, MenuItem, TextField } from '@mui/material';
 import {
   useCodeBlockCombobox,
   useCodeBlockComboboxState,
 } from '@udecode/plate-code-block/react';
-// Prism must be imported before all language files
 import Prism from 'prismjs';
 
+// Prism language imports
 import 'prismjs/components/prism-antlr4.js';
 import 'prismjs/components/prism-bash.js';
 import 'prismjs/components/prism-c.js';
@@ -17,9 +20,9 @@ import 'prismjs/components/prism-cpp.js';
 import 'prismjs/components/prism-csharp.js';
 import 'prismjs/components/prism-css.js';
 import 'prismjs/components/prism-dart.js';
-// import 'prismjs/components/prism-django.js';
+import 'prismjs/components/prism-django.js';
 import 'prismjs/components/prism-docker.js';
-// import 'prismjs/components/prism-ejs.js';
+import 'prismjs/components/prism-ejs.js';
 import 'prismjs/components/prism-erlang.js';
 import 'prismjs/components/prism-git.js';
 import 'prismjs/components/prism-go.js';
@@ -39,7 +42,7 @@ import 'prismjs/components/prism-matlab.js';
 import 'prismjs/components/prism-mermaid.js';
 import 'prismjs/components/prism-objectivec.js';
 import 'prismjs/components/prism-perl.js';
-// import 'prismjs/components/prism-php.js';
+import 'prismjs/components/prism-php.js';
 import 'prismjs/components/prism-powershell.js';
 import 'prismjs/components/prism-properties.js';
 import 'prismjs/components/prism-protobuf.js';
@@ -106,7 +109,6 @@ const languages = [
   { label: 'R', value: 'r' },
   { label: 'Ruby', value: 'ruby' },
   { label: 'Sass (Sass)', value: 'sass' },
-  // FIXME: Error with current scala grammar
   { label: 'Scala', value: 'scala' },
   { label: 'Scheme', value: 'scheme' },
   { label: 'Sass (Scss)', value: 'scss' },
@@ -119,21 +121,134 @@ const languages = [
 export function CodeBlockCombobox() {
   const state = useCodeBlockComboboxState();
   const { commandItemProps } = useCodeBlockCombobox(state);
-
-  const [open, setOpen] = useState(false);
-  const [value, setValue] = useState('');
+  const [anchorEl, setAnchorEl] = useState(null);
+  const [searchText, setSearchText] = useState('');
+  const [highlightedIndex, setHighlightedIndex] = useState(0);
 
   if (state.readOnly) return null;
 
-  const items = languages.filter(
+  const filteredLanguages = languages.filter(
     (language) =>
-      !value ||
-      language.label.toLowerCase().includes(value.toLowerCase()) ||
-      language.value.toLowerCase().includes(value.toLowerCase())
+      !searchText ||
+      language.label.toLowerCase().includes(searchText.toLowerCase()) ||
+      language.value.toLowerCase().includes(searchText.toLowerCase())
   );
+
+  const currentLanguage =
+    languages.find((language) => language.value === state.value)?.label ||
+    languages[0].label;
+
+  const handleClick = (event) => {
+    setAnchorEl(event.currentTarget);
+    setHighlightedIndex(0);
+  };
+
+  const handleClose = () => {
+    setAnchorEl(null);
+    setSearchText('');
+    setHighlightedIndex(0);
+  };
+
+  const handleSelect = (value) => {
+    if (!value) return;
+    commandItemProps.onSelect(value);
+    handleClose();
+  };
+
+  const handleMenuItemClick = (value) => {
+    handleSelect(value);
+  };
+
+  const handleKeyDown = (e) => {
+    e.stopPropagation();
+    if (e.key === 'Escape') {
+      handleClose();
+    } else if (e.key === 'Enter' && filteredLanguages.length > 0) {
+      e.preventDefault();
+      handleSelect(filteredLanguages[highlightedIndex].value);
+      setAnchorEl(null);
+    }
+  };
 
   return (
     <div>
+      <Button
+        size="small"
+        variant="text"
+        onClick={handleClick}
+        endIcon={<KeyboardArrowDown />}
+        sx={{
+          minWidth: 'auto',
+          padding: '2px 8px',
+          fontSize: '12px',
+          color: 'text.secondary',
+          textTransform: 'none',
+        }}
+      >
+        {currentLanguage}
+      </Button>
+      <Menu
+        anchorEl={anchorEl}
+        open={Boolean(anchorEl)}
+        onClose={handleClose}
+        PaperProps={{
+          sx: {
+            maxHeight: 200,
+            width: 180,
+            '& .MuiMenuItem-root': {
+              py: 0.5,
+              px: 1,
+              minHeight: 'auto',
+            },
+          },
+        }}
+        MenuListProps={{
+          autoFocusItem: false,
+          disablePadding: true,
+        }}
+      >
+        <section role="search" aria-label="Code language search" tabIndex="-1">
+          <MenuItem sx={{ p: 0.5 }}>
+            <TextField
+              size="small"
+              placeholder="Search..."
+              value={searchText}
+              onChange={(e) => {
+                setSearchText(e.target.value);
+                setHighlightedIndex(0);
+              }}
+              onKeyDown={handleKeyDown}
+              fullWidth
+              autoFocus
+              onClick={(e) => e.stopPropagation()}
+              inputProps={{
+                style: {
+                  padding: '2px 8px',
+                  fontSize: '12px',
+                  height: '1.5rem',
+                },
+              }}
+            />
+          </MenuItem>
+        </section>
+        <div style={{ maxHeight: '160px', overflow: 'auto' }}>
+          {filteredLanguages.map((language, index) => (
+            <MenuItem
+              key={language.value}
+              onClick={() => handleMenuItemClick(language.value)}
+              selected={highlightedIndex === index}
+              sx={{
+                fontSize: '12px',
+                '&:hover': {
+                  backgroundColor: 'rgba(0, 0, 0, 0.04)',
+                },
+              }}
+            >
+              {language.label}
+            </MenuItem>
+          ))}
+        </div>
+      </Menu>
     </div>
   );
 }

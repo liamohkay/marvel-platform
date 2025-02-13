@@ -2,59 +2,57 @@
 
 import React from 'react';
 
+import ContentCopyIcon from '@mui/icons-material/ContentCopy';
+import { IconButton, SvgIcon } from '@mui/material';
 import { cn, withRef } from '@udecode/cn';
-import { formatCodeBlock, isLangSupported } from '@udecode/plate-code-block';
+import { SlateElement } from '@udecode/plate';
 import { useCodeBlockElementState } from '@udecode/plate-code-block/react';
-import { BracesIcon } from 'lucide-react';
 
-import { Button } from './button';
 import { CodeBlockCombobox } from './code-block-combobox';
-import { PlateElement } from './plate-element';
 
 export const CodeBlockElement = withRef(
   ({ children, className, ...props }, ref) => {
     const { element } = props;
-
     const state = useCodeBlockElementState({ element });
 
+    const handleCopy = () => {
+      const codeContent = element.children
+        .map((child) =>
+          child.children.map((textNode) => textNode.text).join('')
+        )
+        .join('\n');
+      navigator.clipboard.writeText(codeContent);
+    };
+
     return (
-      <PlateElement
+      <SlateElement
         ref={ref}
-        className={cn(className, 'py-1', state.className)}
+        className={cn('relative py-1', state.className, className)}
         {...props}
       >
-        <pre className="overflow-x-auto rounded-md bg-muted px-6 py-8 font-mono text-sm leading-[normal] [tab-size:2]">
+        <pre className="overflow-x-auto rounded-md bg-muted px-6 py-8 font-mono text-sm leading-[normal] [tab-size:2] relative">
+          {state.syntax && (
+            <div
+              className="absolute top-2 w-full"
+              contentEditable={false}
+              style={{
+                display: 'flex',
+                justifyContent: 'space-between',
+              }}
+            >
+              <CodeBlockCombobox />
+              <IconButton size="small" onClick={handleCopy} disableRipple>
+                <SvgIcon
+                  component={ContentCopyIcon}
+                  inheritViewBox
+                  sx={{ fontSize: 16, opacity: 0.5 }}
+                />
+              </IconButton>
+            </div>
+          )}
           <code>{children}</code>
         </pre>
-
-        {state.syntax && (
-          <div
-            className="absolute top-2 right-2 z-10 flex items-center gap-1 select-none"
-            contentEditable={false}
-          >
-            <CodeBlockFormatButton {...props} />
-            <CodeBlockCombobox />
-          </div>
-        )}
-      </PlateElement>
+      </SlateElement>
     );
   }
 );
-
-export function CodeBlockFormatButton({ editor, element }) {
-  if (!isLangSupported(element.lang)) {
-    return null;
-  }
-
-  return (
-    <Button
-      size="xs"
-      variant="ghost"
-      className="h-5 justify-between px-1 text-xs"
-      onClick={() => formatCodeBlock(editor, { element })}
-      title="Format code"
-    >
-      <BracesIcon className="text-gray-500" />
-    </Button>
-  );
-}
