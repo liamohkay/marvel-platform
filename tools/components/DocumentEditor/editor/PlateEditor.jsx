@@ -44,6 +44,7 @@ import 'prismjs/themes/prism.css';
 import { actions as toolActions } from '@/tools/data';
 import { syncHistoryEntry } from '@/tools/data/thunks/editHistory';
 import { EDIT_HISTORY_TYPES } from '@/tools/libs/constants/editor';
+import { TablePlugin } from '@udecode/plate-table/react';
 
 const { addStateToEditHistory } = toolActions;
 
@@ -89,6 +90,9 @@ export function PlateEditor(props) {
     BoldPlugin,
     ItalicPlugin,
     UnderlinePlugin,
+    TablePlugin.configure({
+      options: {},
+    }),
     CodePlugin,
     CodeBlockPlugin.configure({ options: { prism: Prism } }),
     CodeLinePlugin.configure({}),
@@ -121,27 +125,50 @@ export function PlateEditor(props) {
   const parsedMarkdownContent = markdownContent
     ? editorInstance.api.markdown.deserialize(markdownContent)
     : [];
+  console.log('parsedMarkdownContent', parsedMarkdownContent);
 
   const editor = usePlateEditor({
     override: {
       components: {
-        blockquote: withProps(PlateElement, { as: 'blockquote', className: 'my-2 border-l-4 pl-4 text-muted-foreground italic' }),
-        ul: withProps(ListElement, { variant: 'ul', className: 'slate-answers' }),
-        ol: withProps(ListElement, { variant: 'ol', className: 'slate-answers' }),
+        blockquote: withProps(PlateElement, {
+          as: 'blockquote',
+          className: 'my-2 border-l-4 pl-4 text-muted-foreground italic',
+        }),
+        ul: withProps(ListElement, {
+          variant: 'ul',
+          className: 'slate-answers',
+        }),
+        ol: withProps(ListElement, {
+          variant: 'ol',
+          className: 'slate-answers',
+        }),
         bold: withProps(PlateLeaf, { as: 'strong' }),
         italic: withProps(PlateLeaf, { as: 'em' }),
         underline: withProps(PlateLeaf, { as: 'u' }),
         ...[1, 2, 3, 4, 5, 6].reduce((acc, level) => {
           acc[`h${level}`] = withProps(PlateElement, {
             as: `h${level}`,
-            className: `text-[${70 - level * 10}px] font-heading font-semibold leading-[${43.2 - level * 5}px] text-muted mb-2`,
+            className: `text-[${
+              70 - level * 10
+            }px] font-heading font-semibold leading-[${
+              43.2 - level * 5
+            }px] text-muted mb-2`,
           });
           return acc;
         }, {}),
         p: withProps(PlateElement, { as: 'p', className: 'text-base mb-4' }),
-        table: withProps(PlateElement, { as: 'table', className: 'w-full border-collapse border border-gray-200' }),
-        tr: withProps(PlateElement, { as: 'tr', className: 'border-b border-gray-200' }),
-        th: withProps(PlateElement, { as: 'th', className: 'px-4 py-2 text-left bg-gray-100' }),
+        table: withProps(PlateElement, {
+          as: 'table',
+          className: 'w-full border-collapse border border-gray-200',
+        }),
+        tr: withProps(PlateElement, {
+          as: 'tr',
+          className: 'border-b border-gray-200',
+        }),
+        th: withProps(PlateElement, {
+          as: 'th',
+          className: 'px-4 py-2 text-left bg-gray-100',
+        }),
         td: withProps(PlateElement, { as: 'td', className: 'px-4 py-2' }),
         [CodePlugin.key]: withProps(PlateLeaf, { as: 'code' }),
         [CodeBlockPlugin.key]: CodeBlockElement,
@@ -174,6 +201,7 @@ export function PlateEditor(props) {
    */
   const handleAutosave = debounce((editorContent) => {
     const editorMarkdown = editor.api.markdown.serialize(editorContent);
+    console.log('Autosaving...', editorMarkdown);
     const newHistoryEntry = {
       timestamp: Date.now(),
       content: editorMarkdown,
