@@ -26,6 +26,7 @@ import { HEADING_KEYS } from '@udecode/plate-heading';
 import { HeadingPlugin } from '@udecode/plate-heading/react';
 import { IndentPlugin } from '@udecode/plate-indent/react';
 import { IndentListPlugin } from '@udecode/plate-indent-list/react';
+import { LinkPlugin } from '@udecode/plate-link/react';
 import { ListPlugin } from '@udecode/plate-list/react';
 import { MarkdownPlugin } from '@udecode/plate-markdown';
 import Prism from 'prismjs';
@@ -35,7 +36,7 @@ import { CodeBlockElement } from '../plate-ui/code-block-element';
 import { CodeLineElement } from '../plate-ui/code-line-element';
 import { CodeSyntaxLeaf } from '../plate-ui/code-syntax-leaf';
 import { Editor, EditorContainer } from '../plate-ui/editor';
-import { ListElement } from '../plate-ui/list-element';
+import { LinkElement } from '../plate-ui/link-element';
 import { EditorToolbar } from '../plate-ui/toolbar';
 
 import styles from './PlateEditor.module.css';
@@ -90,6 +91,14 @@ export function PlateEditor(props) {
     BoldPlugin,
     ItalicPlugin,
     UnderlinePlugin,
+    LinkPlugin.configure({
+      options: {
+        forceProtocol: true,
+        defaultProtocol: 'https://',
+        keepSelectedTextOnPaste: true,
+        handleClick: false, // Let our custom handler work
+      },
+    }),
     TablePlugin.configure({
       options: {},
     }),
@@ -105,7 +114,7 @@ export function PlateEditor(props) {
       },
     }),
     StrikethroughPlugin,
-    MarkdownPlugin.configure({ options: { indentList: true } }),
+    MarkdownPlugin,
     HeadingPlugin,
     IndentPlugin.configure({
       inject: {
@@ -119,13 +128,12 @@ export function PlateEditor(props) {
     }),
   ];
 
-  const editorInstance = createPlateEditor({ plugins });
+  // const editorInstance = createPlateEditor({ plugins });
 
-  // Deserialize raw Markdown content into editor value
-  const parsedMarkdownContent = markdownContent
-    ? editorInstance.api.markdown.deserialize(markdownContent)
-    : [];
-  console.log('parsedMarkdownContent', parsedMarkdownContent);
+  // // Deserialize raw Markdown content into editor value
+  // const parsedMarkdownContent = markdownContent
+  //   ? editorInstance.api.markdown.deserialize(markdownContent)
+  //   : [];
 
   const editor = usePlateEditor({
     override: {
@@ -134,42 +142,38 @@ export function PlateEditor(props) {
           as: 'blockquote',
           className: 'my-2 border-l-4 pl-4 text-muted-foreground italic',
         }),
-        ul: withProps(ListElement, {
-          variant: 'ul',
-          className: 'slate-answers',
+        ul: withProps(PlateElement, {
+          as: 'ul',
         }),
-        ol: withProps(ListElement, {
-          variant: 'ol',
-          className: 'slate-answers',
+        ol: withProps(PlateElement, {
+          as: 'ol',
+        }),
+        li: withProps(PlateElement, {
+          as: 'li',
         }),
         bold: withProps(PlateLeaf, { as: 'strong' }),
         italic: withProps(PlateLeaf, { as: 'em' }),
         underline: withProps(PlateLeaf, { as: 'u' }),
+        [LinkPlugin.key]: LinkElement,
         ...[1, 2, 3, 4, 5, 6].reduce((acc, level) => {
           acc[`h${level}`] = withProps(PlateElement, {
             as: `h${level}`,
-            className: `text-[${
-              70 - level * 10
-            }px] font-heading font-semibold leading-[${
-              43.2 - level * 5
-            }px] text-muted mb-2`,
           });
           return acc;
         }, {}),
-        p: withProps(PlateElement, { as: 'p', className: 'text-base mb-4' }),
+        p: withProps(PlateElement, {
+          as: 'p',
+        }),
         table: withProps(PlateElement, {
           as: 'table',
-          className: 'w-full border-collapse border border-gray-200',
         }),
         tr: withProps(PlateElement, {
           as: 'tr',
-          className: 'border-b border-gray-200',
         }),
         th: withProps(PlateElement, {
           as: 'th',
-          className: 'px-4 py-2 text-left bg-gray-100',
         }),
-        td: withProps(PlateElement, { as: 'td', className: 'px-4 py-2' }),
+        td: withProps(PlateElement, { as: 'td' }),
         [CodePlugin.key]: withProps(PlateLeaf, { as: 'code' }),
         [CodeBlockPlugin.key]: CodeBlockElement,
         [CodeLinePlugin.key]: CodeLineElement,
@@ -177,12 +181,12 @@ export function PlateEditor(props) {
       },
     },
     plugins,
-    value: parsedMarkdownContent || [],
   });
 
   useEffect(() => {
     if (markdownContent) {
-      const content = editorInstance.api.markdown.deserialize(markdownContent);
+      // const content = editorInstance.api.markdown.deserialize(markdownContent);
+      const content = editor.api.markdown.deserialize(markdownContent);
       setDebugValue(content);
       // Update editor's internal state
       editor.children = content;
@@ -201,7 +205,6 @@ export function PlateEditor(props) {
    */
   const handleAutosave = debounce((editorContent) => {
     const editorMarkdown = editor.api.markdown.serialize(editorContent);
-    console.log('Autosaving...', editorMarkdown);
     const newHistoryEntry = {
       timestamp: Date.now(),
       content: editorMarkdown,
