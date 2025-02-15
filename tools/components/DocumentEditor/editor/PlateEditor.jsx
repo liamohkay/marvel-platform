@@ -33,6 +33,9 @@ import { ListElement } from "../plate-ui/list-element";
 import { HEADING_KEYS } from "@udecode/plate-heading";
 import { HeadingPlugin } from "@udecode/plate-heading/react";
 import { IndentPlugin } from "@udecode/plate-indent/react";
+import { createAlignPlugin } from "@udecode/plate-alignment";
+import { createCodeBlockPlugin } from "@udecode/plate-code-block";
+import { createLinkPlugin } from '@udecode/plate-link';
 
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { Editor, EditorContainer } from "../plate-ui/editor";
@@ -85,6 +88,8 @@ export function PlateEditor(props) {
     BoldPlugin,
     ItalicPlugin,
     UnderlinePlugin,
+    createAlignPlugin,
+    createLinkPlugin
     LinkPlugin.configure({
       options: {
         forceProtocol: true,
@@ -97,6 +102,7 @@ export function PlateEditor(props) {
       options: {},
     }),
     CodePlugin,
+    createCodeBlockPlugin,
     CodeBlockPlugin.configure({ options: { prism: Prism } }),
     CodeLinePlugin.configure({}),
     CodeSyntaxPlugin.configure({
