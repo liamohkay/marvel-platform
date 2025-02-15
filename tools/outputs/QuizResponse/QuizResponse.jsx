@@ -21,9 +21,9 @@ const QuizResponse = () => {
   const { content: markdownContent } = useSelector((state) => state.tools.editorState.currentState);
 
   const dispatch = useDispatch();
-  const { content: markdownContent } = useSelector(
-    (state) => state.tools.editorState.currentState
-  );
+  // const { content: markdownContent } = useSelector(
+  //   (state) => state.tools.editorState.currentState
+  // );
 
   const handleUndo = () => {
     dispatch(undo());

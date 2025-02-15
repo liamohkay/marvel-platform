@@ -61,10 +61,7 @@ const ToolRequestForm = (props) => {
     plugins: [MarkdownPlugin],
   });
 
-  const markdownEditor = usePlateEditor({
-    plugins: [MarkdownPlugin],
-  });
-
+  
   const handleSubmitMultiForm = async (values) => {
     try {
       // eslint-disable-next-line no-console
@@ -188,12 +185,7 @@ const ToolRequestForm = (props) => {
       markdownEditor.children = editorMarkdownData;
       const markdownToSave = markdownEditor.api.markdown.serialize();
 
-      const markdown = convertResponseToMarkdown(response, id);
-
-      // Use the editor's markdown API to process the content
-      const editorMarkdownData = markdownEditor.api.markdown.deserialize(markdown);
-      markdownEditor.children = editorMarkdownData;
-      const markdownToSave = markdownEditor.api.markdown.serialize();
+      
 
       dispatch(setResponse(response));
       dispatch(setSessionId(sessionId));
