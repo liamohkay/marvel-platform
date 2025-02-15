@@ -58,9 +58,9 @@ const MainAppLayout = (props) => {
         <Grid {...styles.bgGridProps}>
           <Image src={ImageURLs.GridBg} alt="grid_bg" {...styles.bgProps} />
         </Grid>
-        <Grid {...styles.navBarContainer}>
+        {/* <Grid {...styles.navBarContainer}>
           <SideMenu user={user.data} />
-        </Grid>
+        </Grid> */}
         <Grid {...styles.contentGridProps(extraContentProps, isToolPage)}>
           <Grid {...styles.childrenWrapProps}>{children}</Grid>
         </Grid>

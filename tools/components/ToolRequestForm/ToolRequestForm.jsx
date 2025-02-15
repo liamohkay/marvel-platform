@@ -39,7 +39,7 @@ const {
 } = toolActions;
 
 const ToolRequestForm = (props) => {
-  const { id, inputs } = props;
+  const { id, inputs, isPopout } = props;
   const theme = useTheme();
   const dispatch = useDispatch();
   const { handleOpenSnackBar } = useContext(AuthContext);
@@ -460,12 +460,28 @@ const ToolRequestForm = (props) => {
     }
   };
 
-  const renderActionButtons = () => (
+  const renderGenerateButton = () => (
     <Grid mt={4} {...styles.actionButtonGridProps}>
       <GradientOutlinedButton
         id="submitButton"
         bgcolor={theme.palette.Common.White['100p']}
         text="Generate"
+        textColor={theme.palette.Common.White['100p']}
+        loading={communicatorLoading}
+        onHoverTextColor={theme.palette.Background.purple}
+        type="submit"
+        inverted
+        {...styles.submitButtonProps}
+      />
+    </Grid>
+  );
+
+  const renderRegenerateButton = () => (
+    <Grid {...styles.regenerateButtonGridProps}>
+      <GradientOutlinedButton
+        id="submitButton"
+        bgcolor={theme.palette.Common.White['100p']}
+        text="Regenerate"
         textColor={theme.palette.Common.White['100p']}
         loading={communicatorLoading}
         onHoverTextColor={theme.palette.Background.purple}
@@ -487,7 +503,7 @@ const ToolRequestForm = (props) => {
         <Grid {...styles.mainContentGridProps}>
           {inputs?.map((input) => renderInput(input))}
         </Grid>
-        {renderActionButtons()}
+        {isPopout ? renderRegenerateButton() : renderGenerateButton()}
       </Grid>
     </FormContainer>
   );
