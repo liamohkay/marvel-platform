@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+// import React, { useEffect, useState } from "react";
 
 import { MarkdownPlugin } from "@udecode/plate-markdown";
 
@@ -8,6 +8,7 @@ import { useSelector, useDispatch } from "react-redux";
 
 import { actions as toolActions } from "@/tools/data";
 import { syncHistoryEntry } from "@/tools/data/thunks/editHistory";
+import React, { useEffect, useState } from "react";
 
 import { withProps } from "@udecode/cn";
 import {
@@ -84,7 +85,28 @@ export function PlateEditor(props) {
     BoldPlugin,
     ItalicPlugin,
     UnderlinePlugin,
+    LinkPlugin.configure({
+      options: {
+        forceProtocol: true,
+        defaultProtocol: "https://",
+        keepSelectedTextOnPaste: true,
+        handleClick: false, // Let our custom handler work
+      },
+    }),
+    TablePlugin.configure({
+      options: {},
+    }),
     CodePlugin,
+    CodeBlockPlugin.configure({ options: { prism: Prism } }),
+    CodeLinePlugin.configure({}),
+    CodeSyntaxPlugin.configure({
+      syntax: {
+        languages: {
+          js: "javascript",
+        },
+        defaultLanguage: "javascript",
+      },
+    }),
     StrikethroughPlugin,
     MarkdownPlugin,
     HeadingPlugin,
@@ -100,12 +122,12 @@ export function PlateEditor(props) {
     }),
   ];
 
-  const editorInstance = createPlateEditor({ plugins });
+  // const editorInstance = createPlateEditor({ plugins });
 
-  // Deserialize raw Markdown content into editor value
-  const parsedMarkdownContent = markdownContent
-    ? editorInstance.api.markdown.deserialize(markdownContent)
-    : [];
+  // // Deserialize raw Markdown content into editor value
+  // const parsedMarkdownContent = markdownContent
+  //   ? editorInstance.api.markdown.deserialize(markdownContent)
+  //   : [];
 
   const editor = usePlateEditor({
     override: {
@@ -153,12 +175,12 @@ export function PlateEditor(props) {
       },
     },
     plugins,
-    value: parsedMarkdownContent || [],
   });
 
   useEffect(() => {
     if (markdownContent) {
-      const content = editorInstance.api.markdown.deserialize(markdownContent);
+      // const content = editorInstance.api.markdown.deserialize(markdownContent);
+      const content = editor.api.markdown.deserialize(markdownContent);
       setDebugValue(content);
       // Update editor's internal state
       editor.children = content;
