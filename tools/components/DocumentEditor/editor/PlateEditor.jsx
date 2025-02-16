@@ -29,6 +29,7 @@ import { IndentListPlugin } from '@udecode/plate-indent-list/react';
 import { LinkPlugin } from '@udecode/plate-link/react';
 import { ListPlugin } from '@udecode/plate-list/react';
 import { MarkdownPlugin } from '@udecode/plate-markdown';
+import { FontSizePlugin } from '@udecode/plate-font/react';
 import Prism from 'prismjs';
 import { useDispatch, useSelector } from 'react-redux';
 
@@ -126,6 +127,10 @@ export function PlateEditor(props) {
         targetPlugins: [ParagraphPlugin.key, HEADING_KEYS.h1],
       },
     }),
+    FontSizePlugin.configure({
+      defaultSize: 14,
+      validSizes: [8, 10, 12, 14, 16],
+    }),
   ];
 
   // const editorInstance = createPlateEditor({ plugins });
@@ -161,23 +166,18 @@ export function PlateEditor(props) {
           });
           return acc;
         }, {}),
-        p: withProps(PlateElement, {
-          as: 'p',
-        }),
-        table: withProps(PlateElement, {
-          as: 'table',
-        }),
-        tr: withProps(PlateElement, {
-          as: 'tr',
-        }),
-        th: withProps(PlateElement, {
-          as: 'th',
-        }),
-        td: withProps(PlateElement, { as: 'td' }),
-        [CodePlugin.key]: withProps(PlateLeaf, { as: 'code' }),
-        [CodeBlockPlugin.key]: CodeBlockElement,
-        [CodeLinePlugin.key]: CodeLineElement,
-        [CodeSyntaxPlugin.key]: CodeSyntaxLeaf,
+        p: withProps(PlateElement, { as: 'p', className: 'text-base mb-4' }),
+        table: withProps(PlateElement, { as: 'table', className: 'w-full border-collapse border border-gray-200' }),
+        tr: withProps(PlateElement, { as: 'tr', className: 'border-b border-gray-200' }),
+        th: withProps(PlateElement, { as: 'th', className: 'px-4 py-2 text-left bg-gray-100' }),
+        td: withProps(PlateElement, { as: 'td', className: 'px-4 py-2' }),
+        ...[8, 10, 12, 14, 16].reduce((acc, size) => {
+          acc[`fontSize${size}`] = withProps(PlateLeaf, {
+            as: 'span',
+            style: { fontSize: `${size}px` }
+          });
+          return acc;
+        }, {}),
       },
     },
     plugins,
