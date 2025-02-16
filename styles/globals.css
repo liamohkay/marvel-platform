@@ -100,8 +100,8 @@
 }
 
 .slate-btn:hover {
-  background: #0C0B17;
-  color: #9E7EFF; 
+  background: #DECDFF ;
+  color: #0C0B17; 
 }
 
 .slate-btn.is-active {
@@ -232,6 +232,12 @@
  margin-left: 18px;
  margin-top: 10px;
  font-size: 15px;
+
+}
+.list-text-font{
+  color: #DECDFF;
+  margin-top: 10px;
+  padding:10px;
 }
 .marvel-list-dropdown .MuiListItemText-primary {
   color: white;
@@ -243,6 +249,52 @@
   display: flex;
   align-items: center;
 }
+
+
+/* Additional styles for alignment dropdown */
+.alignment-dropdown-arrow {
+  background-color: transparent; 
+  color: #9E7EFF;
+  margin-left: -8px;
+}
+
+.alignment-dropdown-arrow:hover {
+  background-color: transparent;
+}
+
+/* Font Style and Size Dropdown Styles */
+.font-style-dropdown {
+  display: flex;
+  align-items: center;
+  color: #9E7EFF;
+  background-color: transparent;
+}
+
+.font-size-dropdown {
+  display: flex;
+  align-items: center;
+  color: #9E7EFF;
+  background-color: transparent;
+}
+
+.font-style-dropdown .MuiListItemText-primary,
+.font-size-dropdown .MuiListItemText-primary {
+  color: #DECDFF;
+  margin-left: 18px;
+}
+
+.font-style-dropdown .MuiListItemText-primary:hover,
+.font-size-dropdown .MuiListItemText-primary:hover {
+  color: #24272F;
+}
+
+/* Font Size Utility Classes */
+.fontSize8 { font-size: 8px; }
+.fontSize10 { font-size: 10px; }
+.fontSize12 { font-size: 12px; }
+.fontSize14 { font-size: 14px; }
+.fontSize16 { font-size: 16px; }
+
 
 
 /*
@@ -523,39 +575,3 @@ a {
   }
 }
 
-/* Additional styles for alignment dropdown */
-.alignment-dropdown-arrow {
-  background-color: transparent; 
-  color: #9E7EFF;
-  margin-left: -8px;
-}
-
-.alignment-dropdown-arrow:hover {
-  background-color: transparent;
-}
-
-/* Font Style and Size Dropdown Styles */
-.font-style-dropdown {
-  display: flex;
-  align-items: center;
-  color: #9E7EFF;
-  background-color: transparent;
-}
-
-.font-size-dropdown {
-  display: flex;
-  align-items: center;
-  color: #9E7EFF;
-  background-color: transparent;
-}
-
-.font-style-dropdown .MuiListItemText-primary,
-.font-size-dropdown .MuiListItemText-primary {
-  color: #DECDFF;
-  margin-left: 18px;
-}
-
-.font-style-dropdown .MuiListItemText-primary:hover,
-.font-size-dropdown .MuiListItemText-primary:hover {
-  color: #24272F;
-}

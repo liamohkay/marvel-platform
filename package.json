@@ -31,6 +31,7 @@
     "@udecode/plate-basic-marks": "^42.0.0",
     "@udecode/plate-block-quote": "^42.0.0",
     "@udecode/plate-code-block": "^42.2.2",
+    "@udecode/plate-font": "^44.0.0",
     "@udecode/plate-heading": "^42.2.2",
     "@udecode/plate-indent": "^43.0.0",
     "@udecode/plate-indent-list": "^43.0.0",

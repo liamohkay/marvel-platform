@@ -31,6 +31,7 @@ import { IndentPlugin } from '@udecode/plate-indent/react';
 import { IndentListPlugin } from '@udecode/plate-indent-list/react';
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { MarkdownPlugin } from '@udecode/plate-markdown';
+import { FontSizePlugin } from '@udecode/plate-font/react';
 
 import { Editor, EditorContainer } from '../plate-ui/editor';
 
@@ -96,6 +97,10 @@ export function PlateEditor(props) {
         targetPlugins: [ParagraphPlugin.key, HEADING_KEYS.h1],
       },
     }),
+    FontSizePlugin.configure({
+      defaultSize: 14,
+      validSizes: [8, 10, 12, 14, 16],
+    }),
   ];
 
   const editorInstance = createPlateEditor({ plugins });
@@ -126,6 +131,13 @@ export function PlateEditor(props) {
         tr: withProps(PlateElement, { as: 'tr', className: 'border-b border-gray-200' }),
         th: withProps(PlateElement, { as: 'th', className: 'px-4 py-2 text-left bg-gray-100' }),
         td: withProps(PlateElement, { as: 'td', className: 'px-4 py-2' }),
+        ...[8, 10, 12, 14, 16].reduce((acc, size) => {
+          acc[`fontSize${size}`] = withProps(PlateLeaf, {
+            as: 'span',
+            style: { fontSize: `${size}px` }
+          });
+          return acc;
+        }, {}),
       },
     },
     plugins,
