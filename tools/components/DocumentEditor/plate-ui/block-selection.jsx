@@ -1,27 +1,23 @@
-'use client';
+"use client";
 
-import React from 'react';
+import React from "react";
 
-import { cn } from '@udecode/cn';
-import { useEditorPlugin } from '@udecode/plate-core/react';
-<<<<<<< HEAD
-import { DndPlugin } from '@udecode/plate-dnd';
-=======
+import { cn } from "@udecode/cn";
+import { useEditorPlugin } from "@udecode/plate-core/react";
 // import { DndPlugin } from '@udecode/plate-dnd';
->>>>>>> fa767e4a51ab3399ccc55366af9a460764c54e35
-import { useBlockSelected } from '@udecode/plate-selection/react';
-import { cva } from 'class-variance-authority';
+import { useBlockSelected } from "@udecode/plate-selection/react";
+import { cva } from "class-variance-authority";
 
 export const blockSelectionVariants = cva(
-  'pointer-events-none absolute inset-0 z-[1] bg-brand/[.13] transition-opacity',
+  "pointer-events-none absolute inset-0 z-[1] bg-brand/[.13] transition-opacity",
   {
     defaultVariants: {
       active: true,
     },
     variants: {
       active: {
-        false: 'opacity-0',
-        true: 'opacity-100',
+        false: "opacity-0",
+        true: "opacity-100",
       },
     },
   }
@@ -30,7 +26,7 @@ export const blockSelectionVariants = cva(
 export function BlockSelection({ className, ...props }) {
   const isBlockSelected = useBlockSelected();
   const { useOption } = useEditorPlugin(DndPlugin);
-  const isDragging = useOption('isDragging');
+  const isDragging = useOption("isDragging");
 
   if (!isBlockSelected) return null;
 

@@ -1,49 +1,44 @@
-import { TOOLS_ID } from '../constants/tools';
+import { TOOLS_ID } from "../constants/tools";
 
 const escapeMarkdown = (text) => {
-  if (typeof text !== 'string') return '';
-  return text.replace(/([*_#`[\]>\\])/g, '\\$1');
+  if (typeof text !== "string") return "";
+  return text.replace(/([*_#`[\]>\\])/g, "\\$1");
 };
 
 const convertQuizToMarkdown = (response) => {
-  if (!Array.isArray(response)) return '';
+  if (!Array.isArray(response)) return "";
 
   return response
     .map((question, index) => {
       const escapedQuestion = escapeMarkdown(question.question);
       const questionText = `# ${index + 1}. ${escapedQuestion}\n`;
-<<<<<<< HEAD
-
-      // Render each choice as a separate paragraph
-=======
->>>>>>> fa767e4a51ab3399ccc55366af9a460764c54e35
       const choices = question.choices
         .map(
           (choice) =>
             `&nbsp;&nbsp;${choice.key}. ${escapeMarkdown(choice.value)}`
         )
-        .join('\n\n');
+        .join("\n\n");
 
       return `${questionText}\n${choices}`;
     })
-    .join('\n\n');
+    .join("\n\n");
 };
 
 const convertFlashcardsToMarkdown = (response) => {
-  if (!Array.isArray(response)) return '';
+  if (!Array.isArray(response)) return "";
 
   return response
     .map((card) => {
       const escapedDefinition = escapeMarkdown(card.definition);
       return `### ${escapeMarkdown(card.concept)}\n${escapedDefinition}`;
     })
-    .join('\n\n---\n\n');
+    .join("\n\n---\n\n");
 };
 
 const convertWorksheetToMarkdown = (response) => {
-  if (typeof response !== 'object') return '';
+  if (typeof response !== "object") return "";
 
-  let markdown = '';
+  let markdown = "";
   let questionNumber = 1;
 
   // Multiple Choice Questions
@@ -66,7 +61,7 @@ const convertWorksheetToMarkdown = (response) => {
     response.true_false.forEach((q) => {
       markdown += `# Question ${questionNumber}: True/False\n\n`;
       markdown += `${escapeMarkdown(q.question)}\n\n`;
-      markdown += `**Answer:** ${q.answer ? 'True' : 'False'}\n`;
+      markdown += `**Answer:** ${q.answer ? "True" : "False"}\n`;
       markdown += `**Explanation:** ${escapeMarkdown(q.explanation)}\n\n`;
       questionNumber += 1;
     });
@@ -80,19 +75,19 @@ const convertWorksheetToMarkdown = (response) => {
       // Format question with blanks
       let questionText = escapeMarkdown(q.question);
       q.blanks.forEach((blank) => {
-        questionText = questionText.replace(`{${blank.key}}`, '____');
+        questionText = questionText.replace(`{${blank.key}}`, "____");
       });
       markdown += `${questionText}\n\n`;
 
       // Word Bank
-      markdown += '**Word Bank:**\n';
+      markdown += "**Word Bank:**\n";
       markdown += q.word_bank
         .map((word) => `• ${escapeMarkdown(word)}`)
-        .join('\n');
-      markdown += '\n\n';
+        .join("\n");
+      markdown += "\n\n";
 
       // Answers
-      markdown += '**Answers:**\n';
+      markdown += "**Answers:**\n";
       q.blanks.forEach((blank) => {
         markdown += `${Number(blank.key) + 1}. ${escapeMarkdown(
           blank.value
@@ -107,9 +102,9 @@ const convertWorksheetToMarkdown = (response) => {
 };
 
 const convertSyllabusToMarkdown = (response) => {
-  if (typeof response !== 'object') return '';
+  if (typeof response !== "object") return "";
 
-  let markdown = '| Section | Details |\n|---------|----------|\n';
+  let markdown = "| Section | Details |\n|---------|----------|\n";
 
   const courseInfo = response.course_information;
   if (courseInfo) {
@@ -135,7 +130,7 @@ const convertSyllabusToMarkdown = (response) => {
   if (objectives) {
     const allObjectives = objectives
       .map((obj) => `• ${escapeMarkdown(obj)}`)
-      .join('<br>');
+      .join("<br>");
     markdown += `| Objectives | ${allObjectives} |\n`;
   }
 
@@ -144,7 +139,7 @@ const convertSyllabusToMarkdown = (response) => {
   if (outcomes) {
     const allOutcomes = outcomes
       .map((out) => `• ${escapeMarkdown(out)}`)
-      .join('<br>');
+      .join("<br>");
     markdown += `| Learning Outcomes | ${allOutcomes} |\n`;
   }
 
@@ -158,7 +153,7 @@ const convertSyllabusToMarkdown = (response) => {
  * @returns {string} - Formatted markdown string
  */
 export const convertResponseToMarkdown = (response, toolId) => {
-  if (!response) return '';
+  if (!response) return "";
 
   switch (toolId) {
     case TOOLS_ID.MULTIPLE_CHOICE_QUIZ_GENERATOR:
@@ -170,7 +165,7 @@ export const convertResponseToMarkdown = (response, toolId) => {
     case TOOLS_ID.SYLLABUS_GENERATOR:
       return convertSyllabusToMarkdown(response);
     default:
-      return typeof response === 'string'
+      return typeof response === "string"
         ? response
         : JSON.stringify(response, null, 2);
   }
