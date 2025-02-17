@@ -1,39 +1,40 @@
-import { useContext } from 'react';
+import { useContext } from "react";
 
-import { Help } from '@mui/icons-material';
-import { Grid, Tooltip, Typography, useTheme } from '@mui/material';
-import { getDownloadURL, getStorage, ref, uploadBytes } from 'firebase/storage';
+import { Help } from "@mui/icons-material";
+import { Grid, Tooltip, Typography, useTheme } from "@mui/material";
+import { getDownloadURL, getStorage, ref, uploadBytes } from "firebase/storage";
 
-import { FormContainer, useForm, useWatch } from 'react-hook-form-mui';
-import { useDispatch, useSelector } from 'react-redux';
+import { FormContainer, useForm, useWatch } from "react-hook-form-mui";
+import { useDispatch, useSelector } from "react-redux";
 
-import FileTypeSelectorInput from '@/components/FileTypeSelectorInput';
-import GradientOutlinedButton from '@/components/GradientOutlinedButton';
-import PrimaryDatePickerInput from '@/components/PrimaryDatePickerInput';
-import PrimaryFileUpload from '@/components/PrimaryFileUpload';
-import PrimarySelectorInput from '@/components/PrimarySelectorInput';
-import PrimaryTextFieldInput from '@/components/PrimaryTextFieldInput';
+import FileTypeSelectorInput from "@/components/FileTypeSelectorInput";
+import GradientOutlinedButton from "@/components/GradientOutlinedButton";
+import PrimaryDatePickerInput from "@/components/PrimaryDatePickerInput";
+import PrimaryFileUpload from "@/components/PrimaryFileUpload";
+import PrimarySelectorInput from "@/components/PrimarySelectorInput";
+import PrimaryTextFieldInput from "@/components/PrimaryTextFieldInput";
 
-import styles from './styles';
+import styles from "./styles";
 
-import ALERT_COLORS from '@/libs/constants/notification';
-import { AuthContext } from '@/libs/providers/GlobalProvider';
-import { firestore } from '@/libs/redux/store';
+import ALERT_COLORS from "@/libs/constants/notification";
+import { AuthContext } from "@/libs/providers/GlobalProvider";
+import { firestore } from "@/libs/redux/store";
 
-import { fetchToolHistory, actions as toolActions } from '@/tools/data';
-import { EDIT_HISTORY_TYPES } from '@/tools/libs/constants/editor';
-import { INPUT_TYPES } from '@/tools/libs/constants/inputs';
-import submitPrompt from '@/tools/libs/services/submitPrompt';
-import evaluateCondition from '@/tools/libs/utils/evaluateCondition';
-import { convertResponseToMarkdown } from '@/tools/libs/utils/markdownConverter';
-import { usePlateEditor } from '@udecode/plate/react';
-import { MarkdownPlugin } from '@udecode/plate-markdown';
+import { fetchToolHistory, actions as toolActions } from "@/tools/data";
+import { EDIT_HISTORY_TYPES } from "@/tools/libs/constants/editor";
+import { INPUT_TYPES } from "@/tools/libs/constants/inputs";
+import submitPrompt from "@/tools/libs/services/submitPrompt";
+import evaluateCondition from "@/tools/libs/utils/evaluateCondition";
+import { convertResponseToMarkdown } from "@/tools/libs/utils/markdownConverter";
+import { usePlateEditor } from "@udecode/plate/react";
+import { MarkdownPlugin } from "@udecode/plate-markdown";
 
 const {
   setCommunicatorLoading,
   setFormOpen,
   setResponse,
   addStateToEditHistory,
+  setSessionId,
 } = toolActions;
 
 const ToolRequestForm = (props) => {
@@ -61,11 +62,10 @@ const ToolRequestForm = (props) => {
     plugins: [MarkdownPlugin],
   });
 
-  
   const handleSubmitMultiForm = async (values) => {
     try {
       // eslint-disable-next-line no-console
-      console.log('Form submission started with values:', values);
+      console.log("Form submission started with values:", values);
       dispatch(setResponse(null));
       dispatch(setCommunicatorLoading(true));
 
@@ -107,8 +107,11 @@ const ToolRequestForm = (props) => {
       // Create a base object with all input names initialized to empty string
       const baseInputs = inputs.reduce((acc, input) => {
         // Skip file type inputs as they're handled separately
-        if (input.type !== INPUT_TYPES.FILE && input.type !== INPUT_TYPES.FILE_TYPE_SELECTOR) {
-          acc[input.name] = '';
+        if (
+          input.type !== INPUT_TYPES.FILE &&
+          input.type !== INPUT_TYPES.FILE_TYPE_SELECTOR
+        ) {
+          acc[input.name] = "";
         }
         return acc;
       }, {});
@@ -117,38 +120,40 @@ const ToolRequestForm = (props) => {
       const mergedValues = { ...baseInputs, ...values };
 
       // Convert values and create updateData
-      let updateData = Object.entries(mergedValues).map(([name, originalValue]) => {
-        // Skip file-related fields as they're handled separately
-        if (name.endsWith('_file') || name.endsWith('_url')) {
-          return null;
-        }
+      let updateData = Object.entries(mergedValues)
+        .map(([name, originalValue]) => {
+          // Skip file-related fields as they're handled separately
+          if (name.endsWith("_file") || name.endsWith("_url")) {
+            return null;
+          }
 
-        // Skip the original file input names for FILE_TYPE_SELECTOR
-        const fileInput = fileInputs.find(input => input.name === name);
-        if (fileInput) {
-          return null;
-        }
+          // Skip the original file input names for FILE_TYPE_SELECTOR
+          const fileInput = fileInputs.find((input) => input.name === name);
+          if (fileInput) {
+            return null;
+          }
 
-        // Convert numeric strings to integers using Number.isNaN instead of isNaN
-        let value = originalValue;
-        if (
-          typeof originalValue === 'string' &&
-          !Number.isNaN(Number(originalValue.trim())) &&
-          originalValue.trim() !== ''
-        ) {
-          value = parseInt(originalValue.trim(), 10);
-        }
-        // Ensure value key exists even if it's an empty string
-        return { 
-          name, 
-          value: value === null || value === undefined ? '' : value 
-        };
-      }).filter(Boolean); // Remove null entries
+          // Convert numeric strings to integers using Number.isNaN instead of isNaN
+          let value = originalValue;
+          if (
+            typeof originalValue === "string" &&
+            !Number.isNaN(Number(originalValue.trim())) &&
+            originalValue.trim() !== ""
+          ) {
+            value = parseInt(originalValue.trim(), 10);
+          }
+          // Ensure value key exists even if it's an empty string
+          return {
+            name,
+            value: value === null || value === undefined ? "" : value,
+          };
+        })
+        .filter(Boolean); // Remove null entries
 
       // Add file type information for FILE_TYPE_SELECTOR
       fileInputs
-        .filter(input => input.type === INPUT_TYPES.FILE_TYPE_SELECTOR)
-        .forEach(input => {
+        .filter((input) => input.type === INPUT_TYPES.FILE_TYPE_SELECTOR)
+        .forEach((input) => {
           if (values[input.name]) {
             updateData.push({
               name: `${input.name}_type`,
@@ -161,14 +166,14 @@ const ToolRequestForm = (props) => {
       const finalData = [...updateData, ...fileUrls];
 
       // eslint-disable-next-line no-console
-      console.log('Files uploaded, sending request to endpoint with data:', {
+      console.log("Files uploaded, sending request to endpoint with data:", {
         toolData: { toolId: id, inputs: finalData },
       });
 
       const { response, sessionId } = await submitPrompt(
         {
           tool_data: { tool_id: id, inputs: finalData },
-          type: 'tool',
+          type: "tool",
           user: {
             id: userData?.id,
             fullName: userData?.fullName,
@@ -181,11 +186,10 @@ const ToolRequestForm = (props) => {
       const markdown = convertResponseToMarkdown(response, id);
 
       // Use the editor's markdown API to process the content
-      const editorMarkdownData = markdownEditor.api.markdown.deserialize(markdown);
+      const editorMarkdownData =
+        markdownEditor.api.markdown.deserialize(markdown);
       markdownEditor.children = editorMarkdownData;
       const markdownToSave = markdownEditor.api.markdown.serialize();
-
-      
 
       dispatch(setResponse(response));
       dispatch(setSessionId(sessionId));
@@ -208,25 +212,32 @@ const ToolRequestForm = (props) => {
       dispatch(fetchToolHistory({ firestore }));
     } catch (error) {
       // eslint-disable-next-line no-console
-      console.error('Error during form submission:', error);
+      console.error("Error during form submission:", error);
 
       dispatch(setCommunicatorLoading(false));
       handleOpenSnackBar(
         ALERT_COLORS.ERROR,
-        error?.message || 'Couldn\u0027t send prompt'
+        error?.message || "Couldn\u0027t send prompt"
       );
     }
   };
 
   const renderTextInput = (inputProps) => {
-    const { name: inputName, placeholder, tooltip, label, isRequired = true } = inputProps;
+    const {
+      name: inputName,
+      placeholder,
+      tooltip,
+      label,
+      isRequired = true,
+    } = inputProps;
     const renderLabel = () => (
       <Grid {...styles.textFieldLabelGridProps}>
         <Typography {...styles.labelProps(errors?.[inputName])}>
-          {label}{isRequired && ' *'}
+          {label}
+          {isRequired && " *"}
         </Typography>
         {tooltip && (
-          <Tooltip placement="top" title={tooltip} sx={{ ml: 1 }}>
+          <Tooltip placement='top' title={tooltip} sx={{ ml: 1 }}>
             <Help />
           </Tooltip>
         )}
@@ -243,11 +254,7 @@ const ToolRequestForm = (props) => {
           control={control}
           placeholder={placeholder}
           helperText={errors?.[inputName]?.message}
-          validation={
-            isRequired
-              ? { required: 'Field is required' }
-              : {}
-          }
+          validation={isRequired ? { required: "Field is required" } : {}}
           ref={register}
         />
       </Grid>
@@ -255,14 +262,21 @@ const ToolRequestForm = (props) => {
   };
 
   const renderNumberInput = (inputProps) => {
-    const { name: inputName, placeholder, tooltip, label, isRequired = true } = inputProps;
+    const {
+      name: inputName,
+      placeholder,
+      tooltip,
+      label,
+      isRequired = true,
+    } = inputProps;
     const renderLabel = () => (
       <Grid {...styles.textFieldLabelGridProps}>
         <Typography {...styles.labelProps(errors?.[inputName])}>
-          {label}{isRequired && ' *'}
+          {label}
+          {isRequired && " *"}
         </Typography>
         {tooltip && (
-          <Tooltip placement="top" title={tooltip} sx={{ ml: 1 }}>
+          <Tooltip placement='top' title={tooltip} sx={{ ml: 1 }}>
             <Help />
           </Tooltip>
         )}
@@ -280,13 +294,9 @@ const ToolRequestForm = (props) => {
           placeholder={placeholder}
           helperText={errors?.[inputName]?.message}
           extraInputProps={{
-            type: 'number',
+            type: "number",
           }}
-          validation={
-            isRequired
-              ? { required: 'Field is required' }
-              : {}
-          }
+          validation={isRequired ? { required: "Field is required" } : {}}
           ref={register}
         />
       </Grid>
@@ -294,12 +304,19 @@ const ToolRequestForm = (props) => {
   };
 
   const renderSelectorInput = (inputProps) => {
-    const { name: inputName, label, placeholder, values, isRequired = true } = inputProps;
+    const {
+      name: inputName,
+      label,
+      placeholder,
+      values,
+      isRequired = true,
+    } = inputProps;
 
     const renderLabel = () => (
       <Grid {...styles.labelGridProps}>
         <Typography {...styles.labelProps(errors?.[inputName])}>
-          {label}{isRequired && ' *'}
+          {label}
+          {isRequired && " *"}
         </Typography>
       </Grid>
     );
@@ -321,9 +338,7 @@ const ToolRequestForm = (props) => {
           control={control}
           ref={register}
           validation={
-            isRequired
-              ? { required: 'Please select an option.' }
-              : {}
+            isRequired ? { required: "Please select an option." } : {}
           }
         />
       </Grid>
@@ -339,12 +354,12 @@ const ToolRequestForm = (props) => {
           id={inputName}
           name={inputName}
           multiple
-          placeholder="Choose Files to Upload"
-          label={`${label}${isRequired ? ' *' : ''}`}
+          placeholder='Choose Files to Upload'
+          label={`${label}${isRequired ? " *" : ""}`}
           error={errors?.[inputName]}
           helperText={errors?.[inputName]?.message}
-          color="purple"
-          bgColor="#23252A"
+          color='purple'
+          bgColor='#23252A'
           control={control}
           getValues={() => watchedValues}
           ref={register}
@@ -355,16 +370,19 @@ const ToolRequestForm = (props) => {
           validation={
             isRequired
               ? {
-                  required: 'Please upload a file.',
+                  required: "Please upload a file.",
                   validate: {
                     lessThanThree: (v) =>
-                      parseInt(v?.length, 10) < 10 || 'Should be less than 3 files',
+                      parseInt(v?.length, 10) < 10 ||
+                      "Should be less than 3 files",
                   },
                 }
               : {
                   validate: {
                     lessThanThree: (v) =>
-                      !v?.length || parseInt(v?.length, 10) < 10 || 'Should be less than 3 files',
+                      !v?.length ||
+                      parseInt(v?.length, 10) < 10 ||
+                      "Should be less than 3 files",
                   },
                 }
           }
@@ -381,16 +399,14 @@ const ToolRequestForm = (props) => {
         <FileTypeSelectorInput
           key={name}
           name={name}
-          label={`${label}${isRequired ? ' *' : ''}`}
+          label={`${label}${isRequired ? " *" : ""}`}
           fileTypes={values}
           control={control}
           setValue={setValue}
           getValues={() => watchedValues}
           ref={register}
           validation={
-            isRequired
-              ? { required: 'Please select a file type.' }
-              : {}
+            isRequired ? { required: "Please select a file type." } : {}
           }
         />
       </Grid>
@@ -398,28 +414,29 @@ const ToolRequestForm = (props) => {
   };
 
   const renderDateInput = (inputProps) => {
-    const { name: inputName, label, placeholder, isRequired = true } = inputProps;
+    const {
+      name: inputName,
+      label,
+      placeholder,
+      isRequired = true,
+    } = inputProps;
 
     return (
       <Grid
         key={inputName}
         {...styles.inputGridProps}
-        style={{ paddingTop: '0px', marginBottom: '20px' }}
+        style={{ paddingTop: "0px", marginBottom: "20px" }}
       >
         <PrimaryDatePickerInput
           id={inputName}
           name={inputName}
-          title={`${label}${isRequired ? ' *' : ''}`}
+          title={`${label}${isRequired ? " *" : ""}`}
           placeholder={placeholder}
           error={errors?.[inputName]}
           helperText={errors?.[inputName]?.message}
           control={control}
           setValue={setValue}
-          validation={
-            isRequired
-              ? { required: 'Please select a date.' }
-              : {}
-          }
+          validation={isRequired ? { required: "Please select a date." } : {}}
         />
       </Grid>
     );
@@ -432,9 +449,9 @@ const ToolRequestForm = (props) => {
         key={content}
         {...styles.textContentGridProps}
         container
-        justifyContent="center"
+        justifyContent='center'
       >
-        <Typography {...styles.textContentProps} align="center">
+        <Typography {...styles.textContentProps} align='center'>
           {content}
         </Typography>
       </Grid>
@@ -471,13 +488,13 @@ const ToolRequestForm = (props) => {
   const renderActionButtons = () => (
     <Grid mt={4} {...styles.actionButtonGridProps}>
       <GradientOutlinedButton
-        id="submitButton"
-        bgcolor={theme.palette.Common.White['100p']}
-        text="Generate"
-        textColor={theme.palette.Common.White['100p']}
+        id='submitButton'
+        bgcolor={theme.palette.Common.White["100p"]}
+        text='Generate'
+        textColor={theme.palette.Common.White["100p"]}
         loading={communicatorLoading}
         onHoverTextColor={theme.palette.Background.purple}
-        type="submit"
+        type='submit'
         inverted
         {...styles.submitButtonProps}
       />
@@ -487,7 +504,7 @@ const ToolRequestForm = (props) => {
   return (
     <FormContainer
       FormProps={{
-        id: 'tool-form',
+        id: "tool-form",
       }}
       onSuccess={handleSubmit(handleSubmitMultiForm)}
     >
