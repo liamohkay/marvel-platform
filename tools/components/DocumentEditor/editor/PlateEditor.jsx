@@ -6,6 +6,8 @@ import { IndentListPlugin } from "@udecode/plate-indent-list/react";
 
 import { useSelector, useDispatch } from "react-redux";
 
+import { LinkPlugin } from "@udecode/plate-link/react";
+
 import { actions as toolActions } from "@/tools/data";
 import { syncHistoryEntry } from "@/tools/data/thunks/editHistory";
 import React, { useEffect, useState } from "react";
@@ -37,14 +39,23 @@ import { createAlignPlugin } from "@udecode/plate-alignment";
 import { createCodeBlockPlugin } from "@udecode/plate-code-block";
 import { createLinkPlugin } from "@udecode/plate-link";
 
+import { TablePlugin } from "@udecode/plate-table/react";
+
+import Prism from "prismjs";
+
+import {
+  CodeBlockPlugin,
+  CodeLinePlugin,
+  CodeSyntaxPlugin,
+} from "@udecode/plate-code-block/react";
+
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { Editor, EditorContainer } from "../plate-ui/editor";
+import { EditorToolbar } from "../plate-ui/toolbar";
 
 import { EDIT_HISTORY_TYPES } from "@/tools/libs/constants/editor";
 
 const { addStateToEditHistory } = toolActions;
-
-import { EditorToolbar } from "../plate-ui/toolbar";
 
 /**
  * Creates a debounced function that delays invoking the callback
