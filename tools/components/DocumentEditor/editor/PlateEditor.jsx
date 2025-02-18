@@ -92,6 +92,7 @@ export function PlateEditor(props) {
     BoldPlugin,
     ItalicPlugin,
     UnderlinePlugin,
+    FontSizePlugin,
     LinkPlugin.configure({
       options: {
         forceProtocol: true,
@@ -128,7 +129,7 @@ export function PlateEditor(props) {
       },
     }),
     FontSizePlugin.configure({
-      defaultSize: 14,
+      defaultSize: 16,
       validSizes: [8, 10, 12, 14, 16],
     }),
   ];
