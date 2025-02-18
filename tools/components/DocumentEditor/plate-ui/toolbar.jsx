@@ -9,31 +9,42 @@ import {
   FormatAlignCenter as CenterAlignIcon,
   FormatAlignRight as RightAlignIcon,
   FormatAlignJustify as JustifyAlignIcon,
+  Code as CodeIcon,
+  Link as LinkIcon,
 } from '@mui/icons-material';
 
-import { 
-  Menu, 
-  MenuItem, 
+import {
   IconButton,
   ListItemIcon,
   ListItemText,
-  Typography
+  Menu,
+  MenuItem,
+  Typography,
 } from '@mui/material';
+import {
+  ELEMENT_UL, // Unordered List
+  ELEMENT_OL, // Ordered List
+} from '@udecode/plate-list/react';
 
 import * as ToolbarPrimitive from '@radix-ui/react-toolbar';
 import { cn, withCn } from '@udecode/cn';
+
 import { cva } from 'class-variance-authority';
 
 import { useDispatch } from 'react-redux';
 
+import AlignDropdownMenu from './AlignDropdownMenu';
+import LinkToolbarButton from './LinkToolbarButton';
+import ListToolbarButton from './ListToolbarButton';
+import TextStyle from './TextStyle';
 import ToolbarSeparator from './ToolbarSeparator';
 import { withTooltip } from './tooltip';
+
+import UndoRedo from './UndoRedo';
 
 import { actions as toolActions } from '@/tools/data';
 import FontStyle from './FontStyle';
 
-import  UndoRedo  from './UndoRedo';
-import TextStyle from './TextStyle';
 
 const { undo, redo } = toolActions;
 
@@ -91,10 +102,19 @@ export const EditorToolbar = (props) => {
   const { editor } = props;
   if (!editor) return null;
 
-
   const dispatch = useDispatch();
   const handleUndo = () => dispatch(undo());
   const handleRedo = () => dispatch(redo());
+
+  const setAlignment = (alignment) => {
+    editor.setNodes({ align: alignment });
+  };
+  const toggleCodeBlock = () => {
+    editor.setNodes({
+      type: 'code_block',
+      children: [{ text: '' }],
+    });
+  };
 
   const isMarkActive = (format) => {
     const { selection } = editor;
@@ -146,6 +166,7 @@ export const EditorToolbar = (props) => {
   };
 
   const handleListStyleSelect = (blockType) => {
+    console.error('handleListStyleSelect called with:', blockType);
     toggleBlock(blockType);
     handleListMenuClose();
   };
@@ -167,11 +188,10 @@ export const EditorToolbar = (props) => {
   };
 
   // Font Style and Size State Management
- 
-  const [fontSizeAnchorEl, setFontSizeAnchorEl] = React.useState(null);
- 
-  const openFontSize = Boolean(fontSizeAnchorEl);
 
+  const [fontSizeAnchorEl, setFontSizeAnchorEl] = React.useState(null);
+
+  const openFontSize = Boolean(fontSizeAnchorEl);
 
   // Font Size Handlers
   const handleFontSizeMenuOpen = (event) => {
@@ -184,8 +204,14 @@ export const EditorToolbar = (props) => {
 
   const handleFontSizeSelect = (fontSize) => {
     // Remove existing font size marks
-    const fontSizes = ['fontSize8', 'fontSize10', 'fontSize12', 'fontSize14', 'fontSize16'];
-    fontSizes.forEach(size => {
+    const fontSizes = [
+      'fontSize8',
+      'fontSize10',
+      'fontSize12',
+      'fontSize14',
+      'fontSize16',
+    ];
+    fontSizes.forEach((size) => {
       if (isMarkActive(size)) {
         editor.removeMark(size);
       }
@@ -197,22 +223,32 @@ export const EditorToolbar = (props) => {
   };
 
   const getCurrentFontSize = () => {
-    const fontSizes = ['fontSize8', 'fontSize10', 'fontSize12', 'fontSize14', 'fontSize16'];
-    const activeFontSize = fontSizes.find(size => isMarkActive(size));
-    return activeFontSize ? activeFontSize.replace('fontSize', '') + ' pt' : '14 pt';
+    const fontSizes = [
+      'fontSize8',
+      'fontSize10',
+      'fontSize12',
+      'fontSize14',
+      'fontSize16',
+    ];
+    const activeFontSize = fontSizes.find((size) => isMarkActive(size));
+    return activeFontSize
+      ? `${activeFontSize.replace('fontSize', '')} pt`
+      : '14 pt';
   };
 
   return (
     <Toolbar className="slate-toolbar">
-
       {/* Undo and Redo buttons */}
 
-<UndoRedo handleUndo={handleUndo} handleRedo={handleRedo} />
+      <UndoRedo handleUndo={handleUndo} handleRedo={handleRedo} />
 
-        <ToolbarSeparator />
+      <ToolbarSeparator />
       <div className="slate-btn-container">
-
-        <FontStyle editor={editor} isBlockActive={isBlockActive} toggleBlock={toggleBlock}/>
+        <FontStyle
+          editor={editor}
+          isBlockActive={isBlockActive}
+          toggleBlock={toggleBlock}
+        />
         <div className="slate-toolbar-group flex items-center">
           <IconButton
             id="font-size-button"
@@ -226,8 +262,8 @@ export const EditorToolbar = (props) => {
               {getCurrentFontSize()}
             </Typography>
           </IconButton>
-          <DropdownArrowIcon className='dropdown-arrow' />
-          
+          <DropdownArrowIcon className="dropdown-arrow" />
+
           <Menu
             id="font-size-menu"
             anchorEl={fontSizeAnchorEl}
@@ -240,23 +276,56 @@ export const EditorToolbar = (props) => {
               className: 'marvel-list-dropdown',
             }}
           >
-            <Typography className='list-text-font'>Font Size</Typography>
+            <Typography className="list-text-font">Font Size</Typography>
             {[8, 10, 12, 14, 16].map((size) => (
-              <MenuItem 
+              <MenuItem
                 key={size}
                 onClick={() => handleFontSizeSelect(`fontSize${size}`)}
-                className={`list-option ${isMarkActive(`fontSize${size}`) ? 'is-active' : ''}`}
+                className={`list-option ${
+                  isMarkActive(`fontSize${size}`) ? 'is-active' : ''
+                }`}
               >
-                <ListItemText primary={`${size} pt`} style={{fontSize: `${size}px`}} />
+                <ListItemText
+                  primary={`${size} pt`}
+                  style={{ fontSize: `${size}px` }}
+                />
               </MenuItem>
             ))}
           </Menu>
         </div>
         <ToolbarSeparator />
-<TextStyle editor={editor} isMarkActive={isMarkActive} toggleMark={toggleMark} />
+        <TextStyle
+          editor={editor}
+          isMarkActive={isMarkActive}
+          toggleMark={toggleMark}
+        />
 
         <ToolbarSeparator />
-        <div className="slate-toolbar-group">
+
+        <div className="slate-toolbar-group flex items-center">
+          <ListToolbarButton
+            key="bulleted-list"
+            nodeType={ELEMENT_UL}
+            editor={editor}
+            isActive={isBlockActive(ELEMENT_UL)}
+            onClick={() => {
+              console.error('Bulleted List Button Clicked');
+              handleListStyleSelect(ELEMENT_UL);
+            }}
+          />
+          <ListToolbarButton
+            key="numbered-list"
+            nodeType={ELEMENT_OL}
+            editor={editor}
+            isActive={isBlockActive(ELEMENT_OL)}
+            onClick={() => {
+              console.error('Numbered List Button Clicked');
+              handleListStyleSelect(ELEMENT_OL);
+            }}
+          />
+        </div>
+
+        {/* <div className="slate-toolbar-group">
           <IconButton
             id="list-style-button"
             aria-controls={open ? 'list-style-menu' : undefined}
@@ -302,8 +371,9 @@ export const EditorToolbar = (props) => {
               <ListItemText primary="Number List" />
             </MenuItem>
           </Menu>
-        </div>
-        <div className="slate-toolbar-group flex items-center">
+        </div> */}
+
+        {/* <div className="slate-toolbar-group flex items-center">
           <IconButton
             id="alignment-style-button"
             aria-controls={openAlignment ? 'alignment-style-menu' : undefined}
@@ -328,7 +398,7 @@ export const EditorToolbar = (props) => {
             }}
           >
             <Typography className='list-text'>Alignment</Typography>
-            <MenuItem 
+            <MenuItem
               onClick={() => handleAlignmentSelect('leftAlign')}
               className={`list-option ${isBlockActive('leftAlign') ? 'is-active' : ''}`}
             >
@@ -337,7 +407,7 @@ export const EditorToolbar = (props) => {
               </ListItemIcon>
               <ListItemText primary="Left Align" />
             </MenuItem>
-            <MenuItem 
+            <MenuItem
               onClick={() => handleAlignmentSelect('centerAlign')}
               className={`list-option ${isBlockActive('centerAlign') ? 'is-active' : ''}`}
             >
@@ -346,7 +416,7 @@ export const EditorToolbar = (props) => {
               </ListItemIcon>
               <ListItemText primary="Center Align" />
             </MenuItem>
-            <MenuItem 
+            <MenuItem
               onClick={() => handleAlignmentSelect('rightAlign')}
               className={`list-option ${isBlockActive('rightAlign') ? 'is-active' : ''}`}
             >
@@ -355,7 +425,7 @@ export const EditorToolbar = (props) => {
               </ListItemIcon>
               <ListItemText primary="Right Align" />
             </MenuItem>
-            <MenuItem 
+            <MenuItem
               onClick={() => handleAlignmentSelect('justifyAlign')}
               className={`list-option ${isBlockActive('justifyAlign') ? 'is-active' : ''}`}
             >
@@ -365,9 +435,12 @@ export const EditorToolbar = (props) => {
               <ListItemText primary="Justify Align" />
             </MenuItem>
           </Menu>
-        </div>
-        
+        </div> */}
+        <AlignDropdownMenu />
+
         <ToolbarSeparator />
+
+        <LinkToolbarButton />
       </div>
     </Toolbar>
   );

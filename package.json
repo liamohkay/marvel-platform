@@ -27,6 +27,7 @@
     "@reduxjs/toolkit": "^1.9.5",
     "@udecode/cn": "^44.0.0",
     "@udecode/plate": "^44.0.0",
+    "@udecode/plate-alignment": "^44.0.0",
     "@udecode/plate-basic-elements": "^44.0.0",
     "@udecode/plate-basic-marks": "^44.0.0",
     "@udecode/plate-block-quote": "^44.0.0",

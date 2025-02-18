@@ -31,6 +31,7 @@ const communicator = {
   },
   communicatorLoading: false,
   formOpen: true,
+  alignMenuOpen: false,
 };
 
 const initialState = {
@@ -94,6 +95,9 @@ const tools = createSlice({
     },
     setError: (state, action) => {
       state.error = action.payload;
+    },
+    setAlignMenuOpen: (state, action) => {
+      state.alignMenuOpen = action.payload;
     },
   },
   extraReducers: (builder) => {

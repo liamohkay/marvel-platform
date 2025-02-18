@@ -764,6 +764,19 @@
     text-align: right;
   }
 
+  .slate-editor [data-align="center"] {
+    text-align: center;
+  }
+  .slate-editor [data-align="right"] {
+    text-align: right;
+  }
+  .slate-editor [data-align="left"] {
+    text-align: left;
+  }
+  .slate-editor [data-align="justify"] {
+    text-align: justify;
+  }
+
   .slate-editor span.float-left {
     display: block;
     float: left;

@@ -22,6 +22,9 @@ import {
   CodeLinePlugin,
   CodeSyntaxPlugin,
 } from '@udecode/plate-code-block/react';
+
+import { AlignPlugin } from '@udecode/plate-alignment/react';
+
 import { HEADING_KEYS } from '@udecode/plate-heading';
 import { HeadingPlugin } from '@udecode/plate-heading/react';
 import { IndentPlugin } from '@udecode/plate-indent/react';
@@ -131,6 +134,10 @@ export function PlateEditor(props) {
     FontSizePlugin.configure({
       defaultSize: 16,
       validSizes: [8, 10, 12, 14, 16],
+    }),
+    AlignPlugin.configure({
+      defaultAlign: 'left',
+      validAlignments: ['left', 'center', 'right', 'justify']
     }),
   ];
 
