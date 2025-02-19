@@ -55,9 +55,11 @@ const ToolPage = (props) => {
 
   return (
     <>
-      <Grid {...navStyles.navBarContainer}>
-        <ToolNav toolDoc={toolDoc} popoutOpen={popoutOpen} />
-      </Grid>
+      {response && (
+        <Grid {...navStyles.navBarContainer}>
+          <ToolNav toolDoc={toolDoc} popoutOpen={popoutOpen} />
+        </Grid>
+      )}
       <Grid {...styles.mainGridProps}>
         <ToolForm toolDoc={toolDoc} formOpen={formOpen} response={response} />
         {!formOpen && response && <ToolOutputComponent />}
@@ -65,4 +67,5 @@ const ToolPage = (props) => {
     </>
   );
 };
+
 export default ToolPage;
