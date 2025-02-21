@@ -35,6 +35,7 @@ const {
   setFormOpen,
   setResponse,
   setSessionId,
+  setTopic,
   addStateToEditHistory,
 } = toolActions;
 
@@ -68,6 +69,7 @@ const ToolRequestForm = (props) => {
       // eslint-disable-next-line no-console
       console.log('Form submission started with values:', values);
       dispatch(setResponse(null));
+      dispatch(setTopic(null));
       dispatch(setCommunicatorLoading(true));
 
       // Handle file uploads first using original values
@@ -166,7 +168,7 @@ const ToolRequestForm = (props) => {
         toolData: { toolId: id, inputs: finalData },
       });
 
-      const { response, sessionId } = await submitPrompt(
+      const { response, sessionId, topic } = await submitPrompt(
         {
           tool_data: { tool_id: id, inputs: finalData },
           type: 'tool',
@@ -182,12 +184,14 @@ const ToolRequestForm = (props) => {
       const markdown = convertResponseToMarkdown(response, id);
 
       // Use the editor's markdown API to process the content
-      const editorMarkdownData = markdownEditor.api.markdown.deserialize(markdown);
+      const editorMarkdownData =
+        markdownEditor.api.markdown.deserialize(markdown);
       markdownEditor.children = editorMarkdownData;
       const markdownToSave = markdownEditor.api.markdown.serialize();
 
       dispatch(setResponse(response));
       dispatch(setSessionId(sessionId));
+      dispatch(setTopic(topic));
       const historyEntry = {
         content: markdownToSave,
         timestamp: Date.now(),

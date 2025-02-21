@@ -60,6 +60,9 @@ const tools = createSlice({
     setSessionId: (state, action) => {
       state.sessionId = action.payload;
     },
+    setTopic: (state, action) => {
+      state.topic = action.payload;
+    },
     addStateToEditHistory: (state, action) => {
       if (!state.editorState.currentState.content) {
         state.editorState.currentState = action.payload;

@@ -1,6 +1,7 @@
 import { useState } from 'react';
-import { useDispatch } from 'react-redux';
+
 import { Popover } from '@mui/material';
+import { useDispatch } from 'react-redux';
 
 import GradientOutlinedButton from '@/components/GradientOutlinedButton';
 
@@ -83,10 +84,15 @@ const EditPromptPopout = (props) => {
           horizontal: 'left',
         }}
         PaperProps={{
-          sx: styles.popoutStyles
+          sx: styles.popoutStyles,
         }}
       >
-        <ToolRequestForm isPopout={true} inputs={toolDoc?.inputs} id={toolDoc?.id} setTopic={setTopic} />
+        <ToolRequestForm
+          isPopout
+          inputs={toolDoc?.inputs}
+          id={toolDoc?.id}
+          setTopic={setTopic}
+        />
       </Popover>
     </>
   );
