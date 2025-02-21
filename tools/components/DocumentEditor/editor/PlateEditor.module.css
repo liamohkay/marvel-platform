@@ -1351,11 +1351,72 @@
   .slate-editor [type='radio'] {
     margin: 0 6px 0 0;
   }
-
   .slate-editor table {
-    border-radius: 10px;
+    width: 100%;
+    max-width: 850px; /* Matches Multiple Choice Quiz width */
+    margin: 20px auto;
+    border-collapse: separate;
+    border-spacing: 0;
+    border-radius: 12px;
     overflow: hidden;
-    box-shadow: inset 0px 0px 0px 1px --borderColor-default;
+    background: rgba(30, 30, 50, 0.9);
+    box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.25);
+  }
+  
+  /* Header Styling */
+  .slate-editor th {
+    background: linear-gradient(90deg, #9a7cff, #6b5ed7);
+    color: white;
+    font-size: 18px;
+    font-weight: 600;
+    padding: 18px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    border-bottom: 2px solid #5a4bcc;
+  }
+  
+  /* Adjust First Column (Labels) */
+  .slate-editor td:first-child {
+    background: #6b5ed7;
+    color: white;
+    text-transform: uppercase;
+    font-weight: 600;
+    text-align: center;
+    letter-spacing: 0.5px;
+    padding: 16px;
+    width: 30%; /* Increased width of the first column */
+    min-width: 180px; /* Ensures readability */
+    border-right: 2px solid #5a4bcc;
+  }
+  
+  /* Cell Styling */
+  .slate-editor td {
+    padding: 14px;
+    text-align: center;
+    font-size: 17px;
+    font-weight: 500;
+    color: #e0e0e0;
+    border-bottom: 1px solid rgba(128, 101, 255, 0.4);
+  }
+  
+  /* Alternating Row Colors */
+  .slate-editor tr:nth-child(even) td {
+    background: rgba(40, 40, 70, 0.9);
+  }
+  
+  /* Center Table Text */
+  .slate-editor td,
+  .slate-editor th {
+    text-align: center;
+  }
+  
+  /* Caption Styling */
+  .slate-editor caption {
+    font-size: 20px;
+    font-weight: bold;
+    color: #9d74ff;
+    padding: 12px;
+    text-align: center;
   }
   .slate-editor ul li::marker,
   .slate-editor ol li::marker {
