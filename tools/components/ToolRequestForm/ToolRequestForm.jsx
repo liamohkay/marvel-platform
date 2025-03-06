@@ -35,11 +35,12 @@ const {
   setFormOpen,
   setResponse,
   setSessionId,
+  setTopic,
   addStateToEditHistory,
 } = toolActions;
 
 const ToolRequestForm = (props) => {
-  const { id, inputs } = props;
+  const { id, inputs, isPopout } = props;
   const theme = useTheme();
   const dispatch = useDispatch();
   const { handleOpenSnackBar } = useContext(AuthContext);
@@ -68,6 +69,7 @@ const ToolRequestForm = (props) => {
       // eslint-disable-next-line no-console
       console.log('Form submission started with values:', values);
       dispatch(setResponse(null));
+      dispatch(setTopic(null));
       dispatch(setCommunicatorLoading(true));
 
       // Handle file uploads first using original values
@@ -166,7 +168,7 @@ const ToolRequestForm = (props) => {
         toolData: { toolId: id, inputs: finalData },
       });
 
-      const { response, sessionId } = { response: {}, sessionId: '123' };
+      const { response, sessionId, topic } = { response: {}, sessionId: '123' };
       // const { response, sessionId } = await submitPrompt(
       //   {
       //     tool_data: { tool_id: id, inputs: finalData },
@@ -254,12 +256,14 @@ Email example@example.com also converts automatically
 `;
 
       // Use the editor's markdown API to process the content
-      const editorMarkdownData = markdownEditor.api.markdown.deserialize(markdown);
+      const editorMarkdownData =
+        markdownEditor.api.markdown.deserialize(markdown);
       markdownEditor.children = editorMarkdownData;
       const markdownToSave = markdownEditor.api.markdown.serialize();
 
       dispatch(setResponse(response));
       dispatch(setSessionId(sessionId));
+      dispatch(setTopic(topic));
       const historyEntry = {
         content: markdownToSave,
         timestamp: Date.now(),
@@ -532,12 +536,28 @@ Email example@example.com also converts automatically
     }
   };
 
-  const renderActionButtons = () => (
+  const renderGenerateButton = () => (
     <Grid mt={4} {...styles.actionButtonGridProps}>
       <GradientOutlinedButton
         id="submitButton"
         bgcolor={theme.palette.Common.White['100p']}
         text="Generate"
+        textColor={theme.palette.Common.White['100p']}
+        loading={communicatorLoading}
+        onHoverTextColor={theme.palette.Background.purple}
+        type="submit"
+        inverted
+        {...styles.submitButtonProps}
+      />
+    </Grid>
+  );
+
+  const renderRegenerateButton = () => (
+    <Grid {...styles.regenerateButtonGridProps}>
+      <GradientOutlinedButton
+        id="submitButton"
+        bgcolor={theme.palette.Common.White['100p']}
+        text="Regenerate"
         textColor={theme.palette.Common.White['100p']}
         loading={communicatorLoading}
         onHoverTextColor={theme.palette.Background.purple}
@@ -559,7 +579,7 @@ Email example@example.com also converts automatically
         <Grid {...styles.mainContentGridProps}>
           {inputs?.map((input) => renderInput(input))}
         </Grid>
-        {renderActionButtons()}
+        {isPopout ? renderRegenerateButton() : renderGenerateButton()}
       </Grid>
     </FormContainer>
   );

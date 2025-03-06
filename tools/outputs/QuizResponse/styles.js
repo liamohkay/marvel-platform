@@ -14,6 +14,7 @@ const styles = {
       border: '2px solid #1C1233',
       color: 'white',
     },
+    padding: 0,
   },
   titleGridProps: {
     container: true,
@@ -33,6 +34,7 @@ const styles = {
     justifyContent: 'flex-start',
     alignItems: 'center',
     rowGap: 1.5,
+    
   },
   questionGridProps: {
     container: true,

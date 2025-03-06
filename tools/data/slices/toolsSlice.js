@@ -31,6 +31,8 @@ const communicator = {
   },
   communicatorLoading: false,
   formOpen: true,
+  popoutOpen: false,
+  alignMenuOpen: false,
 };
 
 const initialState = {
@@ -58,6 +60,9 @@ const tools = createSlice({
     },
     setSessionId: (state, action) => {
       state.sessionId = action.payload;
+    },
+    setTopic: (state, action) => {
+      state.topic = action.payload;
     },
     addStateToEditHistory: (state, action) => {
       if (!state.editorState.currentState.content) {
@@ -94,6 +99,12 @@ const tools = createSlice({
     },
     setError: (state, action) => {
       state.error = action.payload;
+    },
+    setAlignMenuOpen: (state, action) => {
+      state.alignMenuOpen = action.payload;
+    },
+    setPopoutOpen: (state, action) => {
+      state.popoutOpen = action.payload;
     },
   },
   extraReducers: (builder) => {

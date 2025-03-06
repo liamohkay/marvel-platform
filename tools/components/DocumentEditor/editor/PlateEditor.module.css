@@ -635,6 +635,34 @@
     margin-bottom: 0;
   }
 
+  .slate-editor ol {
+    list-style-type: decimal; /* Ensures top-level ordered lists use numbers */
+  }
+
+  .slate-editor div > ol:not([type]) {
+    list-style-type: decimal; /* Reinforces decimal numbering for direct ol children */
+  }
+
+  .slate-editor ol[type='1'] {
+    list-style-type: decimal;
+  }
+  
+  .slate-editor ol[type='a s'] {
+    list-style-type: lower-alpha;
+  }
+  
+  .slate-editor ol[type='A s'] {
+    list-style-type: upper-alpha;
+  }
+  
+  .slate-editor ol[type='i s'] {
+    list-style-type: lower-roman;
+  }
+  
+  .slate-editor ol[type='I s'] {
+    list-style-type: upper-roman;
+  }
+  
   .slate-editor li > p {
     margin-top: 16px;
   }
@@ -762,6 +790,19 @@
   .slate-editor span.align-right span img {
     margin: 0;
     text-align: right;
+  }
+
+  .slate-editor [data-align="center"] {
+    text-align: center;
+  }
+  .slate-editor [data-align="right"] {
+    text-align: right;
+  }
+  .slate-editor [data-align="left"] {
+    text-align: left;
+  }
+  .slate-editor [data-align="justify"] {
+    text-align: justify;
   }
 
   .slate-editor span.float-left {
@@ -1352,11 +1393,13 @@
     margin: 0 6px 0 0;
   }
 
+
   .slate-editor table {
-    border-radius: 10px;
-    overflow: hidden;
-    box-shadow: inset 0px 0px 0px 1px --borderColor-default;
-  }
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: inset 0px 0px 0px 1px --borderColor-default;
+}
+  
   .slate-editor ul li::marker,
   .slate-editor ol li::marker {
     color: #8065ff;
@@ -1374,4 +1417,49 @@
 
   .markdown-in-widget {
     padding: 40px 32px;
+  }
+  .slate-editor .slate-action_item {
+    position: relative;
+    margin: 4px 0;
+    padding-left: 2em;
+  }
+
+  .slate-editor .slate-action_item [data-slate-node="text"] {
+    display: inline;
+    vertical-align: top;
+  }
+
+  .slate-editor button[role="checkbox"] {
+    width: 18px !important;
+    height: 18px !important;
+    border: 2px solid #B084FF !important;
+    border-radius: 4px !important;
+    background-color: var(--bgColor-default) !important;
+    flex-shrink: 0;
+    padding: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 12px !important;
+    margin-left: 2em !important;
+    vertical-align: text-top;
+  }
+
+  .slate-editor button[role="checkbox"][data-state="checked"] {
+    background-color: #8065ff !important;
+    border-color: #8065ff !important;
+  }
+
+  .slate-editor button[role="checkbox"][data-state="checked"] svg {
+    color: #ffffff !important;
+    width: 12px;
+    height: 12px;
+  }
+
+  .slate-editor button[role="checkbox"][data-state="checked"] ~ [data-slate-node="text"] {
+    text-decoration: line-through;
+    color: var(--fgColor-muted);
+  }
+  .slate-editor button[role="checkbox"]:hover {
+    border-color: #8065ff !important;
   }

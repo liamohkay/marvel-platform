@@ -1,31 +1,8 @@
 const styles = {
   outlinedButtonProps: {
     sx: {
-      fontFamily: 'Inter, sans-serif',
-      fontSize: '14px',
-      fontWeight: 500,
-      lineHeight: '10.3px',
-      letterSpacing: '-0.02em',
-      borderRadius: '8px',
-      color: '#AC92FF',
-      height: '32px',
-      '& .MuiButton-root': {
-        borderRadius: '8px',
-        minWidth: 'auto',
-      },
-      '& svg': {
-        marginRight: 1,
-        '& path': {
-          stroke: '#AC92FF',
-        },
-      },
-      '&:hover': {
-        backgroundColor: '#0C0B17',
-        color: '#AC92FF',
-        '& svg path': {
-          stroke: '#AC92FF',
-        },
-      },
+      margin: 0,
+      padding: '-2px 0 !important',
     },
   },
   menuProps: {

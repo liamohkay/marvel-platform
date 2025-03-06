@@ -44,12 +44,10 @@
 
 .slate-editor {
   padding: 16px;
-
+  --todo-font-size: 16px;
   background-color: transparent; 
-
   color: #FFFFFF; 
   border-radius: 0px 0px 12px 12px;
-
   border-left: 1px solid #9D74FF;
   border-right: 1px solid #9D74FF; 
   border-bottom: 1px solid #9D74FF;
@@ -57,7 +55,7 @@
 
 .slate-toolbar {
   display: flex;
-  justify-content: start;
+  justify-content: flex-start;
   align-items: center;
   gap: 8px;
   padding: 8px 16px;
@@ -100,8 +98,8 @@
 }
 
 .slate-btn:hover {
-  background: #0C0B17;
-  color: #9E7EFF; 
+  background: #DECDFF ;
+  color: #0C0B17; 
 }
 
 .slate-btn.is-active {
@@ -163,6 +161,140 @@
   color: #ffffff;
   white-space: pre-wrap; 
 } */
+
+ 
+/* Marvel-inspired List Dropdown Styles for Material-UI */
+.marvel-list-dropdown {
+  background: #24272F; 
+  color: white;
+  border: 1px solid #DECDFF;
+  border-radius: 5px;
+}
+
+.marvel-list-dropdown .MuiMenuItem-root {
+  color: white;
+  transition: background-color 0.3s ease;
+}
+
+.marvel-list-dropdown .MuiMenuItem-root:hover {
+  background-color:  #DECDFF;
+  
+  ;
+}
+
+.marvel-list-dropdown .MuiMenuItem-root.is-active {
+  background-color: rgba(255,255,255,0.3) !important;
+  font-weight: bold !important;
+}
+/* #9E7EFF */
+.list-style-dropdown {
+  background-color: transparent; 
+  color: #9E7EFF;
+  border-radius: 5px;
+  padding: 2px;
+  display: flex !important;
+  align-items: center !important;
+}
+.dropdown-arrow{
+  background-color: transparent; 
+  color: #9E7EFF;
+  margin-left: -8px;
+}
+.dropdown-arrow:hover{
+  background-color: transparent;
+}
+.list-style-dropdown .MuiSvgIcon-root {
+  color: #9E7EFF; ;
+  margin-left: 4px;
+}
+
+.list-style-dropdown:hover {
+  background-color: #DECDFF;
+  color: #24272F !important;
+}
+
+
+/* Styles for dropdown menu items with icons */
+.marvel-list-dropdown .MuiListItemIcon-root {
+  color: #9E7EFF!important;
+  min-width: 40px;
+}
+
+.marvel-list-dropdown .MuiListItemIcon-root svg {
+  width: 20px;
+  height: 20px;
+}
+
+.list-text{
+ color: #DECDFF;
+ margin-left: 18px;
+ margin-top: 10px;
+ font-size: 15px;
+
+}
+.list-text-font{
+  color: #DECDFF;
+  margin-top: 10px;
+  padding:10px;
+}
+.marvel-list-dropdown .MuiListItemText-primary {
+  color: white;
+}
+.marvel-list-dropdown .MuiListItemText-primary:hover{
+  color: #24272F;
+}
+.marvel-list-dropdown .MuiMenuItem-root {
+  display: flex;
+  align-items: center;
+}
+
+
+/* Additional styles for alignment dropdown */
+.alignment-dropdown-arrow {
+  background-color: transparent; 
+  color: #9E7EFF;
+  margin-left: -8px;
+}
+
+.alignment-dropdown-arrow:hover {
+  background-color: transparent;
+}
+
+/* Font Style and Size Dropdown Styles */
+.font-style-dropdown {
+  display: flex;
+  align-items: center;
+  color: #9E7EFF;
+  background-color: transparent;
+}
+
+.font-size-dropdown {
+  display: flex;
+  align-items: center;
+  color: #9E7EFF;
+  background-color: transparent;
+}
+
+.font-style-dropdown .MuiListItemText-primary,
+.font-size-dropdown .MuiListItemText-primary {
+  color: #DECDFF;
+  margin-left: 18px;
+}
+
+.font-style-dropdown .MuiListItemText-primary:hover,
+.font-size-dropdown .MuiListItemText-primary:hover {
+  color: #24272F;
+}
+
+/* Font Size Utility Classes */
+.fontSize8 { font-size: 8px; }
+.fontSize10 { font-size: 10px; }
+.fontSize12 { font-size: 12px; }
+.fontSize14 { font-size: 14px; }
+.fontSize16 { font-size: 16px; }
+
+
+
 /*
 Roboto-Mono font imported here
 */
@@ -440,3 +572,4 @@ a {
     @apply bg-background text-foreground;
   }
 }
+
