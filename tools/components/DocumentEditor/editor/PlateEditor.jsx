@@ -71,6 +71,16 @@ const debounce = (callback, wait) => {
 };
 
 /**
+ * Removes unnecessary <br> tags from the serialized markdown.
+ *
+ * @param {string} markdown - The serialized markdown content.
+ * @returns {string} - The cleaned markdown without extra <br> tags.
+ */
+const removeExtraBreaks = (markdown) => {
+  return markdown.replace(/<br\s*\/?>/g, ''); // Removes all <br> tags
+};
+
+/**
  * PlateEditor Component
  *
  * A rich-text editor component built with Plate.js that supports Markdown parsing,
@@ -249,7 +259,8 @@ export function PlateEditor(props) {
    * @param {string} editorContent - The current content of the Plate.js editor.
    */
   const handleAutosave = debounce((editorContent) => {
-    const editorMarkdown = editor.api.markdown.serialize(editorContent);
+    let editorMarkdown = editor.api.markdown.serialize(editorContent);
+    editorMarkdown = removeExtraBreaks(editorMarkdown);
     const newHistoryEntry = {
       timestamp: Date.now(),
       content: editorMarkdown,
