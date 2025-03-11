@@ -17,6 +17,7 @@ import { cva } from 'class-variance-authority';
 import { useDispatch } from 'react-redux';
 
 import AlignDropdownMenu from './AlignDropdownMenu';
+import CodeBlockButton from './CodeBlockButton';
 import FontStyle from './FontStyle';
 import LinkToolbarButton from './LinkToolbarButton';
 import ListDropdownMenu from './ListDropdownMenu';
@@ -297,6 +298,7 @@ export const EditorToolbar = (props) => {
         <ToolbarSeparator />
 
         <LinkToolbarButton />
+        <CodeBlockButton editor={editor} />
       </div>
     </Toolbar>
   );
