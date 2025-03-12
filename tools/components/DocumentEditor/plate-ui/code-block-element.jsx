@@ -41,6 +41,7 @@ export const CodeBlockElement = withRef(
       >
         <div className="relative rounded-md bg-muted/50">
           <pre className="overflow-x-auto p-8 pr-4 font-mono text-sm leading-[normal] [tab-size:2] print:break-inside-avoid">
+        <CodeBlockCombobox />
             <code>{children}</code>
           </pre>
 
@@ -57,9 +58,9 @@ export const CodeBlockElement = withRef(
               </Tooltip>
             )}
 
-            {/* <CodeBlockCombobox />
 
-            <CopyButton
+
+            {/* <CopyButton
               value={() => NodeApi.string(element)}
             /> */}
           </div>

@@ -102,6 +102,7 @@ const languages = [
 
 export function CodeBlockCombobox() {
   const [anchorEl, setAnchorEl] = useState(null);
+  const [highlightedIndex, setHighlightedIndex] = useState(0);
   const readOnly = useReadOnly();
   const editor = useEditorRef();
   const element = useElement();
@@ -123,14 +124,33 @@ export function CodeBlockCombobox() {
   const handleClose = () => {
     setAnchorEl(null);
     setSearchText('');
+    setHighlightedIndex(0);
   };
 
-  const handleSelect = (value) => {
-    editor.tf.setNodes(
-      { lang: value },
-      { at: element }
-    );
-    handleClose();
+  const handleSelect = (selectedValue) => {
+    editor.tf.setNodes({ lang: selectedValue }, { at: element });
+    setHighlightedIndex(0);
+    setAnchorEl(null);
+  };
+
+  const handleKeyDown = (e) => {
+    e.stopPropagation();
+    if (e.key === 'Escape') {
+      handleClose();
+    } else if (e.key === 'Enter' && filteredLanguages.length > 0) {
+      e.preventDefault();
+      handleSelect(filteredLanguages[highlightedIndex].value);
+    } else if (e.key === 'ArrowDown') {
+      e.preventDefault();
+      setHighlightedIndex((prevIndex) =>
+        (prevIndex + 1) % filteredLanguages.length
+      );
+    } else if (e.key === 'ArrowUp') {
+      e.preventDefault();
+      setHighlightedIndex((prevIndex) =>
+        (prevIndex - 1 + filteredLanguages.length) % filteredLanguages.length
+      );
+    }
   };
 
   return (
@@ -159,24 +179,48 @@ export function CodeBlockCombobox() {
           sx: {
             maxHeight: 200,
             width: 180,
+            '& .MuiMenuItem-root': {
+              py: 0.5,
+              px: 1,
+              minHeight: 'auto',
+            },
           },
         }}
+        MenuListProps={{
+          autoFocusItem: false,
+          disablePadding: true,
+        }}
       >
-        <MenuItem sx={{ p: 0.5 }}>
-          <TextField
-            size="small"
-            placeholder="Search..."
-            value={searchText}
-            onChange={(e) => setSearchText(e.target.value)}
-            fullWidth
-            autoFocus
-          />
-        </MenuItem>
+        <section role="search" aria-label="Code language search" tabIndex="-1">
+          <MenuItem sx={{ p: 0.5 }}>
+            <TextField
+              size="small"
+              placeholder="Search..."
+              value={searchText}
+              onChange={(e) => {
+                setSearchText(e.target.value);
+                setHighlightedIndex(0);
+              }}
+              onKeyDown={handleKeyDown}
+              fullWidth
+              autoFocus
+              onClick={(e) => e.stopPropagation()}
+              inputProps={{
+                style: {
+                  padding: '2px 8px',
+                  fontSize: '12px',
+                  height: '1.5rem',
+                },
+              }}
+            />
+          </MenuItem>
+        </section>
         <div style={{ maxHeight: '160px', overflow: 'auto' }}>
-          {filteredLanguages.map((language) => (
+          {filteredLanguages.map((language, index) => (
             <MenuItem
               key={language.value}
               onClick={() => handleSelect(language.value)}
+              selected={highlightedIndex === index}
               sx={{
                 fontSize: '12px',
                 '&:hover': {
