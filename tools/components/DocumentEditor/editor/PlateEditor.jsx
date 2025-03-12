@@ -71,13 +71,18 @@ const debounce = (callback, wait) => {
 };
 
 /**
- * Removes unnecessary <br> tags from the serialized markdown.
- *
- * @param {string} markdown - The serialized markdown content.
+ * Removes extra <br> tags from markdown content.
+ * @param {string} markdown - The markdown content to clean.
  * @returns {string} - The cleaned markdown without extra <br> tags.
  */
 const removeExtraBreaks = (markdown) => {
-  return markdown.replace(/<br\s*\/?>/g, ''); // Removes all <br> tags
+  // Then, replace consecutive <br> tags with a single <br>
+  let result = markdown.replace(/(<br\s*\/?>)+/g, '<br />');
+
+  // First, replace <br> tags followed by | with just |
+  result = result.replace(/<br\s*\/?>\s*\|/g, '|');
+
+  return result;
 };
 
 /**
@@ -247,7 +252,7 @@ export function PlateEditor(props) {
       editor.children = content;
       editor.onChange();
     }
-  }, [markdownContent]);
+  }, []);
 
   /**
    * Handles autosaving of the editor content with a debounce mechanism.
